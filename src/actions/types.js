@@ -1,0 +1,1 @@
+export const GENERATE_BOARD = "GENERATE_BOARD";
