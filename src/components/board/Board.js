@@ -2,19 +2,11 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 
 import { generateBoardState } from "../../actions";
+import { buildRowIndices } from "../../util/helpers";
 
 import { Group } from "@visx/group";
 
 import Hexagon from "./tile/Hexagon";
-
-const buildRowIndices = (rowsInColumn, maxRows) => {
-  let startIndex = maxRows - rowsInColumn;
-  let indices = [];
-  for (let i = 0; i < rowsInColumn; ++i) {
-    indices.push(startIndex + 2 * i);
-  }
-  return indices;
-};
 
 const Board = ({
   width,
@@ -25,7 +17,7 @@ const Board = ({
   ...props
 }) => {
   useEffect(() => {
-    props.generateBoardState();
+    props.generateBoardState(numCols);
   }, []);
 
   const containerWidth = containerBox.width;
@@ -80,7 +72,7 @@ const Board = ({
     basis === "height"
       ? boardCenter.y - containerHeight / 2
       : boardCenter.y - boardHeight / 2;
-  console.log(minY);
+
   for (let i = 0; i < numRows; ++i) {
     let y =
       minY +
@@ -99,11 +91,13 @@ const Board = ({
     let columnX = xs[middle + directedOffset];
     let rowsInColumn = numCols - offset;
     let rowIndices = buildRowIndices(rowsInColumn, numCols);
+    // console.log(middle + directedOffset, rowIndices);
     rowIndices.forEach((rowIndex) => {
       let rowY = ys[rowIndex];
       tiles.push(
         <Hexagon
-          key={`${i}-${rowIndex}`}
+          key={`${rowIndex}-${middle + directedOffset}`}
+          index={{ col: middle + directedOffset, row: rowIndex }}
           width={componentWidth}
           center={{ x: columnX, y: rowY }}
           pad={tilePad}

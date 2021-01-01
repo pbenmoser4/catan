@@ -22,3 +22,8 @@ tileCounts[ORE] = 3;
 tileCounts[SHEEP] = 4;
 tileCounts[WHEAT] = 4;
 tileCounts[WOOD] = 4;
+
+export const tileFormat = {
+  resource: undefined,
+  number: 0,
+};
