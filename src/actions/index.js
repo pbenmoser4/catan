@@ -1,7 +1,7 @@
 import _ from "lodash";
 
 import { SET_BOARD_STATE } from "./types";
-import { tileCounts, RESOURCE } from "../util/constants";
+import { tileCounts, RESOURCE, TILE, NODE, EDGE } from "../util/constants";
 import {
   generateArrayFromCountDict,
   buildRowIndices,

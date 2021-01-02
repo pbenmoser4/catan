@@ -2,14 +2,13 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 
 import { generateBoardState } from "../../actions";
-import { buildRowIndices } from "../../util/helpers";
+import { buildRowIndices, getBoardCoordinates } from "../../util/helpers";
 
 import { Group } from "@visx/group";
 
 import Hexagon from "./tile/Hexagon";
 
 const Board = ({
-  width,
   pad = 0,
   tilePadRatio = 0.01, // tilePadRatio is the ratio to the sidelength
   containerBox,
@@ -21,6 +20,8 @@ const Board = ({
   }, [generateBoardState, numCols]);
 
   console.log(props.board);
+
+  getBoardCoordinates(containerBox, numCols, tilePadRatio, pad);
 
   const containerWidth = containerBox.width;
   const containerHeight = containerBox.height;

@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-// import { EDGE, NODE, TILE } from "./constants";
+import { EDGE, NODE, TILE } from "./constants";
 
 export const generateArrayFromCountDict = (countDict, randomize = true) => {
   let arr = [];
@@ -34,6 +34,8 @@ export const distanceBetweenIndices = (idx1, idx2) => {
   let col2 = idx2.col;
   return Math.sqrt(Math.pow(col1 - col2, 2) + Math.pow(row1 - row2, 2));
 };
+
+export const tileCenterForIndex = (idx, numCols) => {};
 
 // Get information about the board around a given tile
 
@@ -153,4 +155,156 @@ export const lookupStringFromIndex = (idx) => {
 export const indexFromLookupString = (str) => {
   let vals = str.split("-");
   return { row: parseInt(vals[0]), col: parseInt(vals[1]) };
+};
+
+const getBoardHWRatio = (numCols, tilePadRatio) => {
+  return (
+    (2 * (numCols * Math.sqrt(3) + numCols * tilePadRatio - tilePadRatio)) /
+    (3 * numCols +
+      Math.sqrt(3) * tilePadRatio * numCols -
+      Math.sqrt(3) * tilePadRatio +
+      1)
+  );
+};
+
+const generateTileXCoordinateArray = (
+  minX,
+  padX,
+  tileSide,
+  tilePad,
+  numCols
+) => {
+  let xs = [];
+  for (let i = 0; i < numCols; ++i) {
+    let x =
+      minX +
+      padX +
+      tileSide +
+      i * ((3 * tileSide + Math.sqrt(3) * tilePad) / 2);
+    xs.push(x);
+  }
+  return xs;
+};
+
+const generateTileYCoordinateArray = (
+  minY,
+  padY,
+  tileSide,
+  tilePad,
+  numRows
+) => {
+  let ys = [];
+  for (let i = 0; i < numRows; ++i) {
+    let y =
+      minY +
+      padY +
+      (Math.sqrt(3) / 2) * tileSide +
+      i * ((Math.sqrt(3) * tileSide + tilePad) / 2);
+    ys.push(y);
+  }
+  return ys;
+};
+
+const generateNodeXCoordinateArray = (
+  tileXCoordinateArray,
+  tileSide,
+  tilePad
+) => {
+  const r = 0.288675 * tilePad;
+  const R = (Math.sqrt(3) / 2 - 0.288675) * tilePad;
+  let nodeXs = [];
+  tileXCoordinateArray.forEach((x, i) => {
+    let coords = [
+      x - tileSide - R,
+      x - tileSide / 2 - r,
+      x + tileSide / 2 + r,
+      x + tileSide + R,
+    ];
+    nodeXs = _.unionBy(nodeXs, coords, (_) => Number(_.toFixed(4)));
+  });
+  return nodeXs.sort((a, b) => parseFloat(a) - parseFloat(b));
+};
+
+const generateNodeYCoordinateArray = (
+  tileYCoordinateArray,
+  tileSide,
+  tilePad
+) => {
+  let nodeYs = [];
+  const increment = (Math.sqrt(3) / 2) * tileSide;
+  tileYCoordinateArray.forEach((y, i) => {
+    let coords = [y - increment - tilePad / 2, y, y + increment + tilePad / 2];
+    nodeYs = _.unionBy(nodeYs, coords, (_) => Number(_.toFixed(4)));
+  });
+  return nodeYs.sort((a, b) => parseFloat(a) - parseFloat(b));
+};
+
+export const getBoardCoordinates = (
+  containerBox,
+  numCols,
+  tilePadRatio,
+  pad
+) => {
+  let coords = {};
+
+  const containerWidth = containerBox.width;
+  const containerHeight = containerBox.height;
+  const containerHWRatio = containerHeight / containerWidth;
+
+  const boardCenter = { x: containerWidth / 2, y: containerHeight / 2 };
+  const boardHWRatio =
+    (2 * (numCols * Math.sqrt(3) + numCols * tilePadRatio - tilePadRatio)) /
+    (3 * numCols +
+      Math.sqrt(3) * tilePadRatio * numCols -
+      Math.sqrt(3) * tilePadRatio +
+      1);
+
+  let basis = containerHWRatio < boardHWRatio ? "height" : "width";
+
+  let boardWidth =
+    basis === "width"
+      ? containerWidth - 2 * pad
+      : containerHeight / boardHWRatio - 2 * pad;
+
+  const numRows = numCols * 2 - 1;
+  const boardHeight = boardWidth * boardHWRatio;
+
+  const tileSide =
+    boardHeight /
+    (numCols * Math.sqrt(3) + tilePadRatio * numCols - tilePadRatio);
+
+  const tilePad = tileSide * tilePadRatio;
+  const tileWidth = 2 * tileSide;
+  const componentWidth = tileWidth + Math.sqrt(3) * tilePad;
+
+  const padX = basis === "width" ? pad : 0;
+  const minX =
+    basis === "width"
+      ? boardCenter.x - containerWidth / 2
+      : boardCenter.x - boardWidth / 2;
+
+  const padY = basis === "height" ? pad : 0;
+  const minY =
+    basis === "height"
+      ? boardCenter.y - containerHeight / 2
+      : boardCenter.y - boardHeight / 2;
+
+  const tileXs = generateTileXCoordinateArray(
+    minX,
+    padX,
+    tileSide,
+    tilePad,
+    numCols
+  );
+  const tileYs = generateTileYCoordinateArray(
+    minY,
+    padY,
+    tileSide,
+    tilePad,
+    numRows
+  );
+  console.log(tileYs);
+  console.log(generateNodeYCoordinateArray(tileYs, tileSide, tilePad));
+
+  coords[TILE] = { xs: tileXs, ys: tileYs };
 };
