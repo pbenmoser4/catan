@@ -148,6 +148,8 @@ export const getNodeIndicesForEdgeIndex = ({ row, col, direction }) => {
 
 export const portNodes = [{ row: 0, col: 0 }];
 
+//// TODO: remove these, I don't think they're necessary
+
 export const lookupStringFromIndex = (idx) => {
   return `${idx.row}-${idx.col}`;
 };
@@ -239,12 +241,8 @@ const generateNodeYCoordinateArray = (
   return nodeYs.sort((a, b) => parseFloat(a) - parseFloat(b));
 };
 
-export const getBoardCoordinates = (
-  containerBox,
-  numCols,
-  tilePadRatio,
-  pad
-) => {
+export const getBoardLayout = (containerBox, numCols, tilePadRatio, pad) => {
+  let layout = {};
   let coords = {};
 
   const containerWidth = containerBox.width;
@@ -252,6 +250,7 @@ export const getBoardCoordinates = (
   const containerHWRatio = containerHeight / containerWidth;
 
   const boardCenter = { x: containerWidth / 2, y: containerHeight / 2 };
+  layout["center"] = boardCenter;
   const boardHWRatio =
     (2 * (numCols * Math.sqrt(3) + numCols * tilePadRatio - tilePadRatio)) /
     (3 * numCols +
@@ -260,6 +259,7 @@ export const getBoardCoordinates = (
       1);
 
   let basis = containerHWRatio < boardHWRatio ? "height" : "width";
+  layout["basis"] = basis;
 
   let boardWidth =
     basis === "width"
@@ -267,15 +267,24 @@ export const getBoardCoordinates = (
       : containerHeight / boardHWRatio - 2 * pad;
 
   const numRows = numCols * 2 - 1;
+  layout["numRows"] = numRows;
+  layout["numCols"] = numCols;
   const boardHeight = boardWidth * boardHWRatio;
+  layout["boardWidth"] = boardWidth;
+  layout["boardHeight"] = boardHeight;
 
   const tileSide =
     boardHeight /
     (numCols * Math.sqrt(3) + tilePadRatio * numCols - tilePadRatio);
+  layout["tileSide"] = tileSide;
 
   const tilePad = tileSide * tilePadRatio;
+  layout["tilePad"] = tilePad;
   const tileWidth = 2 * tileSide;
+  layout["tileWidth"] = tileWidth;
   const componentWidth = tileWidth + Math.sqrt(3) * tilePad;
+
+  layout["componentWidth"] = componentWidth;
 
   const padX = basis === "width" ? pad : 0;
   const minX =
@@ -296,6 +305,8 @@ export const getBoardCoordinates = (
     tilePad,
     numCols
   );
+  const nodeXs = generateNodeXCoordinateArray(tileXs, tileSide, tilePad);
+
   const tileYs = generateTileYCoordinateArray(
     minY,
     padY,
@@ -303,8 +314,11 @@ export const getBoardCoordinates = (
     tilePad,
     numRows
   );
-  console.log(tileYs);
-  console.log(generateNodeYCoordinateArray(tileYs, tileSide, tilePad));
+  const nodeYs = generateNodeYCoordinateArray(tileYs, tileSide, tilePad);
 
   coords[TILE] = { xs: tileXs, ys: tileYs };
+  coords[NODE] = { xs: nodeXs, ys: nodeYs };
+  layout["coords"] = coords;
+
+  return layout;
 };

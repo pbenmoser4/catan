@@ -1,7 +1,14 @@
 import _ from "lodash";
 
 import { SET_BOARD_STATE } from "./types";
-import { tileCounts, RESOURCE, TILE, NODE, EDGE } from "../util/constants";
+import {
+  tileCounts,
+  RESOURCE,
+  TILE,
+  NODE,
+  EDGE,
+  WATER,
+} from "../util/constants";
 import {
   generateArrayFromCountDict,
   buildRowIndices,
@@ -60,12 +67,39 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
     edges = _.unionBy(edges, columnEdges, ({ row, col }) => `${row}${col}`);
   }
 
+  // generate ocean tiles
+  let oceanTiles = [];
+  let numRows = numCols * 2 - 1;
+  let middle = Math.floor(numCols / 2);
+
+  for (let i = 0; i < numCols; i++) {
+    let rowOffset = Math.abs(i - 3);
+    let col = i;
+    let rows = [];
+    if (i === 0 || i === numCols - 1) {
+      for (let j = rowOffset; j <= numRows - rowOffset; j += 2) {
+        rows.push(j);
+      }
+    } else {
+      rows.push(rowOffset);
+      rows.push(numRows - rowOffset - 1);
+    }
+
+    for (let row of rows) {
+      let tileIndex = { row: row, col: col };
+      let tile = { ...tileIndex };
+      tile[RESOURCE] = WATER;
+      oceanTiles.push(tile);
+    }
+  }
+
   dispatch({
     type: SET_BOARD_STATE,
     payload: {
       tiles: tiles,
       nodes: nodes,
       edges: edges,
+      oceanTiles: oceanTiles,
     },
   });
 };
