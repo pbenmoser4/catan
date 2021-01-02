@@ -12,13 +12,15 @@ const Board = ({
   width,
   pad = 0,
   tilePadRatio = 0.01, // tilePadRatio is the ratio to the sidelength
-  numCols = 7,
   containerBox,
   ...props
 }) => {
+  const { generateBoardState, numCols } = props;
   useEffect(() => {
-    props.generateBoardState(numCols);
-  }, []);
+    generateBoardState(numCols);
+  }, [generateBoardState, numCols]);
+
+  console.log(props.board);
 
   const containerWidth = containerBox.width;
   const containerHeight = containerBox.height;
@@ -33,7 +35,6 @@ const Board = ({
       1);
 
   let basis = containerHWRatio < boardHWRatio ? "height" : "width";
-  console.log(basis);
 
   let boardWidth =
     basis === "width"
@@ -109,4 +110,10 @@ const Board = ({
   return <Group>{tiles}</Group>;
 };
 
-export default connect(null, { generateBoardState })(Board);
+const mapStateToProps = (state) => {
+  return {
+    board: state.board,
+  };
+};
+
+export default connect(mapStateToProps, { generateBoardState })(Board);

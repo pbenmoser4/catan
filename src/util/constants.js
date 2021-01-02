@@ -1,3 +1,8 @@
+export const TILE = "TILE";
+export const NODE = "NODE";
+export const EDGE = "EDGE";
+export const RESOURCE = "RESOURCE";
+
 export const BRICK = "BRICK";
 export const DESERT = "DESERT";
 export const ORE = "ORE";

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Polygon } from "@visx/shape";
-import { Group } from "@visx/group";
 
 import Board from "./board/Board";
 
