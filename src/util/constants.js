@@ -37,3 +37,7 @@ export const tileFormat = {
   resource: undefined,
   number: 0,
 };
+
+export const NODE_CLICK = "NODE_CLICK";
+export const TILE_CLICK = "TILE_CLICK";
+export const EDGE_CLICK = "EDGE_CLICK";

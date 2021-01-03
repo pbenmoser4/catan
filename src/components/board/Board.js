@@ -9,6 +9,7 @@ import { Group } from "@visx/group";
 
 import Hexagon from "./tile/Hexagon";
 import GameTile from "./tile/GameTile";
+import GameNode from "./node/GameNode";
 
 const Board = ({
   pad = 0,
@@ -33,9 +34,16 @@ const Board = ({
 
   let middle = parseInt(Math.floor(numCols / 2));
   let boardTiles = [];
+  let boardNodes = [];
 
-  if (Object.keys(dimensions).length > 0 && Object.keys(board).length > 0) {
-    const { tiles, oceanTiles, pips } = board;
+  if (
+    Object.keys(dimensions).length > 0 &&
+    Object.keys(board).length > 0 &&
+    boardTiles.length === 0 &&
+    boardNodes.length === 0
+  ) {
+    const { tiles, oceanTiles, pips, nodes } = board;
+
     tiles.forEach((tile, i) => {
       let { row, col } = tile;
       let pip = _.find(pips, (p) => p.row === row && p.col === col);
@@ -46,7 +54,16 @@ const Board = ({
       boardTiles.push(<GameTile tile={tile} key={i + 100} />);
     });
 
-    return <Group>{boardTiles}</Group>;
+    nodes.forEach((node, i) => {
+      boardNodes.push(<GameNode node={node} key={i + 200} />);
+    });
+
+    return (
+      <Group>
+        <Group>{boardTiles}</Group>
+        <Group>{boardNodes}</Group>
+      </Group>
+    );
   } else {
     return <div>nada</div>;
   }
