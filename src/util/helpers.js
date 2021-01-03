@@ -378,7 +378,7 @@ export const generatePipPlacementArray = (centerIndex, desertIndex) => {
 
   if (
     !(
-      centerIndex.row === desertIndex.row || centerIndex.col === desertIndex.col
+      centerIndex.row === desertIndex.row && centerIndex.col === desertIndex.col
     )
   ) {
     placementArray.push({ ...centerIndex, number: pipCopy.shift() });

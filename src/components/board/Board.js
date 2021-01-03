@@ -36,6 +36,7 @@ const Board = ({
 
   if (Object.keys(dimensions).length > 0 && Object.keys(board).length > 0) {
     const { tiles, oceanTiles, pips } = board;
+    console.log(pips);
     tiles.forEach((tile, i) => {
       let { row, col } = tile;
       let pip = _.find(pips, (p) => p.row === row && p.col === col);
