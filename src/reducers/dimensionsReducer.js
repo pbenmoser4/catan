@@ -11,4 +11,4 @@ const dimensionsReducer = (state = BASE_STATE, action) => {
   }
 };
 
-export default boardReducer;
+export default dimensionsReducer;

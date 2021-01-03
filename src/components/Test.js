@@ -8,7 +8,7 @@ const SvgTest = (props) => {
   console.log(viewBoxString);
   return (
     <svg viewBox={viewBoxString} width="100%" height="100%" id="svg-container">
-      <rect x="0" y="0" width="100%" height="100%" fill="blue" />
+      <rect width="100%" height="100%" fill="black" />
       <Board
         pad={1}
         numCols={7}

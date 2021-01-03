@@ -1,14 +1,7 @@
 import React, { useState } from "react";
 import { Polygon } from "@visx/shape";
 
-const Hexagon = ({
-  width,
-  center,
-  pad,
-  background = "rgb(100,100,100)",
-  fill = undefined,
-  ...props
-}) => {
+const Hexagon = ({ width, center, pad, background, onClick, ...props }) => {
   const [hover, setHover] = useState(false);
 
   const rotate = 0;
@@ -40,17 +33,13 @@ const Hexagon = ({
       y={y}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      onClick={onClick}
     >
-      <rect
-        width={width}
-        height={height}
-        fill={fill}
-        fillOpacity={fill ? 1.0 : 0.0}
-      />
       <Polygon
         sides={6}
         size={shapeSide}
-        fill={hover ? `rgb(200,200,200)` : background}
+        fill={background}
+        fillOpacity={hover ? 0.75 : 1.0}
         rotate={rotate}
         center={shapeCenter}
       />

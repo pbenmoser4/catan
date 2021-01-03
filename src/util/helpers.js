@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-import { EDGE, NODE, TILE } from "./constants";
+import { pips, EDGE, NODE, TILE } from "./constants";
 
 export const generateArrayFromCountDict = (countDict, randomize = true) => {
   let arr = [];
@@ -282,9 +282,12 @@ export const getBoardLayout = (containerBox, numCols, tilePadRatio, pad) => {
   layout["tilePad"] = tilePad;
   const tileWidth = 2 * tileSide;
   layout["tileWidth"] = tileWidth;
+  const tileHeight = Math.sqrt(3) * tileSide;
+  layout["tileHeight"] = tileHeight;
   const componentWidth = tileWidth + Math.sqrt(3) * tilePad;
-
   layout["componentWidth"] = componentWidth;
+  const componentHeight = tileHeight + tilePad;
+  layout["componentHeight"] = componentHeight;
 
   const padX = basis === "width" ? pad : 0;
   const minX =
@@ -321,4 +324,65 @@ export const getBoardLayout = (containerBox, numCols, tilePadRatio, pad) => {
   layout["coords"] = coords;
 
   return layout;
+};
+
+export const getCenterForIndex = (idx, coords) => {
+  const { row, col } = idx;
+  const { xs, ys } = coords;
+  return { x: xs[col], y: ys[row] };
+};
+
+export const pipsForPipNumber = (number) => {
+  let pips = 6 - Math.abs(number - 7);
+  return "•".repeat(pips).trim();
+};
+
+export const generatePipPlacementArray = (centerIndex, desertIndex) => {
+  const placementArray = [];
+  const centerRow = centerIndex.row;
+  const centerCol = centerIndex.col;
+
+  let pipCopy = _.cloneDeep(pips);
+
+  let ringOffset = 2;
+  for (let i = 0; i < ringOffset * 6; ++i) {
+    let theta = (Math.PI / 6) * (i + 1);
+    let colOffset = Math.round(Math.cos(theta) * ringOffset);
+    let rowOffset = -Math.round(Math.sin(theta) * 2 * ringOffset);
+    let idx = {
+      row: centerRow + rowOffset,
+      col: centerCol + colOffset,
+    };
+    if (idx.row === desertIndex.row && idx.col === desertIndex.col) {
+      continue;
+    }
+    idx["number"] = pipCopy.shift();
+    placementArray.push(idx);
+  }
+
+  ringOffset = 1;
+  for (let i = 0; i < 6; ++i) {
+    let theta = (Math.PI / 6) * (2 * i + 1);
+    let colOffset = Math.round(Math.cos(theta) * ringOffset);
+    let rowOffset = -Math.round(Math.sin(theta) * 2 * ringOffset);
+    let idx = {
+      row: centerRow + rowOffset,
+      col: centerCol + colOffset,
+    };
+    if (idx.row === desertIndex.row && idx.col === desertIndex.col) {
+      continue;
+    }
+    idx["number"] = pipCopy.shift();
+    placementArray.push(idx);
+  }
+
+  if (
+    !(
+      centerIndex.row === desertIndex.row || centerIndex.col === desertIndex.col
+    )
+  ) {
+    placementArray.push({ ...centerIndex, number: pipCopy.shift() });
+  }
+
+  return placementArray;
 };

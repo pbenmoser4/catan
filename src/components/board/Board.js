@@ -1,62 +1,49 @@
+import _ from "lodash";
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 
-import { generateBoardState } from "../../actions";
-import { buildRowIndices, getBoardLayout } from "../../util/helpers";
+import { generateBoardState, setBoardDimensions } from "../../actions";
+import { buildRowIndices } from "../../util/helpers";
 
 import { Group } from "@visx/group";
 
 import Hexagon from "./tile/Hexagon";
+import GameTile from "./tile/GameTile";
 
 const Board = ({
   pad = 0,
-  tilePadRatio = 0.01, // tilePadRatio is the ratio to the sidelength
+  tilePadRatio = 0.03, // tilePadRatio is the ratio to the sidelength
   containerBox,
   ...props
 }) => {
-  const { generateBoardState, numCols } = props;
+  const { generateBoardState, setBoardDimensions, numCols } = props;
   useEffect(() => {
     generateBoardState(numCols);
-  }, [generateBoardState, numCols]);
+    setBoardDimensions(containerBox, numCols, tilePadRatio, pad);
+  }, [
+    generateBoardState,
+    setBoardDimensions,
+    numCols,
+    containerBox,
+    tilePadRatio,
+    pad,
+  ]);
 
-  let { board } = props;
-
-  const layout = getBoardLayout(containerBox, numCols, tilePadRatio, pad);
-  console.log(layout);
+  let { board, dimensions } = props;
 
   let middle = parseInt(Math.floor(numCols / 2));
   let boardTiles = [];
 
-  if (layout && Object.keys(board).length > 0) {
-    const { tiles, oceanTiles } = board;
+  if (Object.keys(dimensions).length > 0 && Object.keys(board).length > 0) {
+    const { tiles, oceanTiles, pips } = board;
     tiles.forEach((tile, i) => {
-      const { row, col } = tile;
-      const x = layout.coords.TILE.xs[col];
-      const y = layout.coords.TILE.ys[row];
-      boardTiles.push(
-        <Hexagon
-          key={i}
-          tile={tile}
-          width={layout.componentWidth}
-          center={{ x: x, y: y }}
-          pad={layout.tilePad}
-        />
-      );
+      let { row, col } = tile;
+      let pip = _.find(pips, (p) => p.row === row && p.col === col);
+      boardTiles.push(<GameTile tile={tile} key={i} pip={pip} />);
     });
 
     oceanTiles.forEach((tile, i) => {
-      const { row, col } = tile;
-      const x = layout.coords.TILE.xs[col];
-      const y = layout.coords.TILE.ys[row];
-      boardTiles.push(
-        <Hexagon
-          key={i + 100}
-          tile={tile}
-          width={layout.componentWidth}
-          center={{ x: x, y: y }}
-          pad={layout.tilePad}
-        />
-      );
+      boardTiles.push(<GameTile tile={tile} key={i + 100} />);
     });
 
     return <Group>{boardTiles}</Group>;
@@ -68,7 +55,11 @@ const Board = ({
 const mapStateToProps = (state) => {
   return {
     board: state.board,
+    dimensions: state.dimensions,
   };
 };
 
-export default connect(mapStateToProps, { generateBoardState })(Board);
+export default connect(mapStateToProps, {
+  generateBoardState,
+  setBoardDimensions,
+})(Board);

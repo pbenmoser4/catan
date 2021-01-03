@@ -1,8 +1,10 @@
 import _ from "lodash";
 
-import { SET_BOARD_STATE } from "./types";
+import { SET_BOARD_STATE, SET_BOARD_DIMENSIONS } from "./types";
 import {
+  pips,
   tileCounts,
+  DESERT,
   RESOURCE,
   TILE,
   NODE,
@@ -12,8 +14,10 @@ import {
 import {
   generateArrayFromCountDict,
   buildRowIndices,
+  generatePipPlacementArray,
   getEdgeIndicesForTileIndex,
   getNodeIndicesForTileIndex,
+  getBoardLayout,
 } from "../util/helpers";
 
 export const generateBoardState = (numCols) => (dispatch, getState) => {
@@ -28,6 +32,12 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
   const boardMiddle = parseInt(Math.floor(numCols / 2));
   const rowOffset = 2; // two rows of ocean at the top before land starts
 
+  const centerIndex = {
+    row: numCols - 1,
+    col: Math.floor(numCols / 2),
+  };
+  let desertIndex = undefined;
+
   for (let i = 0; i < numLandCols; ++i) {
     // how many columns from the middle is the tile?
     let offset = Math.ceil(i / 2);
@@ -41,12 +51,17 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
     // avoiding linting warning about unsafe references
     let columnNodes = [];
     let columnEdges = [];
+    let dIndex = undefined;
     rowIndices.forEach((j, i) => {
       let tileIndex = { row: j, col: columnIndex };
-
       let tile = {};
       tile = { ...tileIndex };
-      tile[RESOURCE] = randomizedTiles.pop();
+      let resource = randomizedTiles.pop();
+      tile[RESOURCE] = resource;
+      if (resource === DESERT) {
+        dIndex = tileIndex;
+      }
+
       tiles.push(tile);
 
       let tileNodes = getNodeIndicesForTileIndex(tileIndex);
@@ -63,6 +78,10 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
         ({ row, col }) => `${row}${col}`
       );
     });
+    if (dIndex) {
+      desertIndex = dIndex;
+    }
+
     nodes = _.unionBy(nodes, columnNodes, ({ row, col }) => `${row}${col}`);
     edges = _.unionBy(edges, columnEdges, ({ row, col }) => `${row}${col}`);
   }
@@ -93,6 +112,8 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
     }
   }
 
+  const pipPlacementArray = generatePipPlacementArray(centerIndex, desertIndex);
+
   dispatch({
     type: SET_BOARD_STATE,
     payload: {
@@ -100,6 +121,21 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
       nodes: nodes,
       edges: edges,
       oceanTiles: oceanTiles,
+      pips: pipPlacementArray,
     },
+  });
+};
+
+export const setBoardDimensions = (
+  containerBox,
+  numCols,
+  tilePadRatio,
+  pad
+) => (dispatch, getState) => {
+  const layout = getBoardLayout(containerBox, numCols, tilePadRatio, pad);
+
+  dispatch({
+    type: SET_BOARD_DIMENSIONS,
+    payload: layout,
   });
 };
