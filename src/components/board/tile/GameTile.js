@@ -2,7 +2,13 @@ import React from "react";
 import { connect } from "react-redux";
 
 import { getCenterForIndex } from "../../../util/helpers";
-import { tileColors, DESERT, RESOURCE, WATER } from "../../../util/constants";
+import {
+  tileColors,
+  DESERT,
+  RESOURCE,
+  WATER,
+  TILE_CLICK,
+} from "../../../util/constants";
 
 import { Group } from "@visx/group";
 
@@ -10,7 +16,7 @@ import Hexagon from "./Hexagon";
 import Pip from "./Pip";
 
 const GameTile = (props) => {
-  const { width, height, center, pad, tile, pip } = props;
+  const { width, height, center, pad, tile, pip, onClick } = props;
   const color = tileColors[tile[RESOURCE]];
 
   return (
@@ -20,7 +26,7 @@ const GameTile = (props) => {
         center={center}
         pad={pad}
         background={color}
-        onClick={() => console.log(tile)}
+        onClick={() => onClick(tile)}
       />
       {tile[RESOURCE] !== WATER && tile[RESOURCE] !== DESERT && pip && (
         <Pip center={center} containerWidth={width} number={pip.number} />
@@ -36,6 +42,7 @@ const mapStateToProps = (state, ownProps) => {
     height: state.dimensions.componentHeight,
     center: getCenterForIndex(ownProps.tile, state.dimensions.coords.TILE),
     pad: state.dimensions.tilePad,
+    onClick: state.actions[TILE_CLICK],
   };
 };
 

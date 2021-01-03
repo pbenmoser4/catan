@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 
 import { getCenterForIndex } from "../../../util/helpers";
+import { NODE_CLICK } from "../../../util/constants";
 
 import { Group } from "@visx/group";
 
@@ -26,7 +27,7 @@ const GameNode = (props) => {
       y={center.y - radius}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      onClick={onClick}
+      onClick={() => onClick(node)}
     >
       <circle
         cx={`${radius}`}
@@ -43,6 +44,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     radius: state.dimensions.componentWidth / 10,
     center: getCenterForIndex(ownProps.node, state.dimensions.coords.NODE),
+    onClick: state.actions[NODE_CLICK],
   };
 };
 
