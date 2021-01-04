@@ -10,6 +10,7 @@ import { Group } from "@visx/group";
 import Hexagon from "./tile/Hexagon";
 import GameTile from "./tile/GameTile";
 import GameNode from "./node/GameNode";
+import GameEdge from "./edge/GameEdge";
 
 const Board = ({
   pad = 0,
@@ -35,6 +36,7 @@ const Board = ({
   let middle = parseInt(Math.floor(numCols / 2));
   let boardTiles = [];
   let boardNodes = [];
+  let boardEdges = [];
 
   if (
     Object.keys(dimensions).length > 0 &&
@@ -42,7 +44,7 @@ const Board = ({
     boardTiles.length === 0 &&
     boardNodes.length === 0
   ) {
-    const { tiles, oceanTiles, pips, nodes } = board;
+    const { tiles, oceanTiles, pips, nodes, edges } = board;
 
     tiles.forEach((tile, i) => {
       let { row, col } = tile;
@@ -58,9 +60,14 @@ const Board = ({
       boardNodes.push(<GameNode node={node} key={i + 200} />);
     });
 
+    edges.forEach((edge, i) => {
+      boardEdges.push(<GameEdge edge={edge} key={i + 1000} />);
+    });
+
     return (
       <Group>
         <Group>{boardTiles}</Group>
+        <Group>{boardEdges}</Group>
         <Group>{boardNodes}</Group>
       </Group>
     );

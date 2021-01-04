@@ -4,17 +4,15 @@ import { connect } from "react-redux";
 import { getCenterForIndex } from "../../../util/helpers";
 import { NODE_CLICK } from "../../../util/constants";
 
-import { Group } from "@visx/group";
+//// TODO: implement rendering of settlements and cities
+// const renderSettlement = (node) => {
+//   return null;
+// };
+//
+// const renderCity = (node) => {
+//   return null;
+// };
 
-const renderSettlement = (node) => {
-  return null;
-};
-
-const renderCity = (node) => {
-  return null;
-};
-
-//// TODO: set node click function as a state variable
 const GameNode = (props) => {
   const { node, center, radius, onClick } = props;
   const [hover, setHover] = useState(false);
