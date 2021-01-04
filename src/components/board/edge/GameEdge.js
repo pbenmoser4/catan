@@ -5,9 +5,10 @@ import {
   getNodeIndicesForEdgeIndex,
   getCenterForIndex,
 } from "../../../util/helpers";
+import { TILE_CLICK } from "../../../util/constants";
 
 const GameEdge = (props) => {
-  const { edge, nodes, startCoords, endCoords, strokeWidth } = props;
+  const { edge, nodes, startCoords, endCoords, strokeWidth, onClick } = props;
   const [hover, setHover] = useState(false);
   const x1 = `${startCoords.x}`;
   const y1 = `${startCoords.y}`;
@@ -15,7 +16,11 @@ const GameEdge = (props) => {
   const y2 = `${endCoords.y}`;
 
   return (
-    <g onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
+    <g
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onClick={() => onClick(edge)}
+    >
       <line
         x1={x1}
         y1={y1}
@@ -49,6 +54,7 @@ const mapStateToProps = (state, ownProps) => {
     startCoords: startCoords,
     endCoords: endCoords,
     strokeWidth: state.dimensions.tilePad,
+    onClick: state.actions[TILE_CLICK],
   };
 };
 
