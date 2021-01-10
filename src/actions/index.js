@@ -22,6 +22,7 @@ import {
   generatePipPlacementArray,
   getEdgeIndicesForTileIndex,
   getNodeIndicesForTileIndex,
+  getTileIndicesForNodeIndex,
   getBoardLayout,
 } from "../util/helpers";
 
@@ -151,4 +152,72 @@ export const setBoardDimensions = (
     type: SET_BOARD_DIMENSIONS,
     payload: layout,
   });
+};
+
+export const getTilesForNode = (node) => (dispatch, getState) => {
+  const state = getState();
+  const { board } = state;
+  const { tiles, oceanTiles } = board;
+  const allTiles = _.union(tiles, oceanTiles);
+  const tileIndices = getTileIndicesForNodeIndex(node);
+  return tileIndices.map((tidx) => {
+    let tMatch = _.find(allTiles, (t) => {
+      return t.row === tidx.row && t.col === tidx.col;
+    });
+    tMatch["direction"] = tidx["direction"];
+    return tMatch;
+  });
+};
+
+export const getResourceTilesForNode = (node) => (dispatch, getState) => {
+  const allTiles = getTilesForNode(node)(dispatch, getState);
+  const resourceTiles = _.filter(allTiles, (t) => t[RESOURCE] !== WATER);
+  return resourceTiles;
+};
+
+export const getPortsForNode = (node) => (dispatch, getState) => {
+  const allTiles = getTilesForNode(node)(dispatch, getState);
+  const portTiles = _.filter(
+    allTiles,
+    (t) => t[RESOURCE] === WATER && t[PORT_RESOURCE] !== undefined
+  );
+
+  const ret = portTiles.map((pt) => {
+    const { direction, PORT_RESOURCE, PORT_DIRECTION } = pt;
+    switch (direction) {
+      case "ll":
+        if (["ur", "dr"].includes(PORT_DIRECTION)) {
+          return PORT_RESOURCE;
+        }
+        break;
+      case "dl":
+        if (PORT_DIRECTION === "ur") {
+          return PORT_RESOURCE;
+        }
+        break;
+      case "ul":
+        if (PORT_DIRECTION === "dr") {
+          return PORT_RESOURCE;
+        }
+        break;
+      case "rr":
+        if (["ul", "dl"].includes(PORT_DIRECTION)) {
+          return PORT_RESOURCE;
+        }
+        break;
+      case "ur":
+        if (PORT_DIRECTION === "dl") {
+          return PORT_RESOURCE;
+        }
+        break;
+      case "dr":
+        if (PORT_DIRECTION === "ul") {
+          return PORT_RESOURCE;
+        }
+        break;
+      default:
+    }
+  });
+
+  return ret[0] ? ret : undefined;
 };

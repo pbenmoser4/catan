@@ -5,9 +5,7 @@ import { tileColors } from "../../../util/constants";
 import { Group } from "@visx/group";
 
 const Port = ({ resource, direction, center, width, pad, hover, ...props }) => {
-  console.log(hover);
   const strokeWidth = hover ? 2 : 1;
-  console.log(strokeWidth);
   const innerStrokeWidth = 1;
   const s = (width - 2 * pad) / 2 - strokeWidth / 2;
   const points = [center];

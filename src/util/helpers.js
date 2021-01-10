@@ -1,6 +1,14 @@
 import _ from "lodash";
 
-import { pips, ports, EDGE, NODE, TILE } from "./constants";
+import {
+  pips,
+  ports,
+  EDGE,
+  NODE,
+  TILE,
+  PORT_RESOURCE,
+  PORT_DIRECTION,
+} from "./constants";
 
 export const generateArrayFromCountDict = (countDict, randomize = true) => {
   let arr = [];
@@ -117,7 +125,10 @@ export const getTileIndicesForNodeIndex = (nodeIndex) => {
   const { row, col } = nodeIndex;
 
   let rowStart = row - 2;
+  // if the col is even, start to the left, if odd, start to the right
   let colStart = (col - (col % 2)) / 2 - 1;
+
+  let directions = col % 2 === 0 ? ["ul", "rr", "dl"] : ["ur", "ll", "dr"];
 
   let arr = [];
 
@@ -125,10 +136,15 @@ export const getTileIndicesForNodeIndex = (nodeIndex) => {
     arr.push({
       row: rowStart + i,
       col: col % 2 === 0 ? colStart + (i % 2) : colStart + ((i + 1) % 2),
+      direction: directions[i],
     });
   }
 
   return arr;
+};
+
+export const getPortForNode = (node) => {
+  const tiles = getTileIndicesForNodeIndex(node);
 };
 
 // Get information about the board around a given edge
