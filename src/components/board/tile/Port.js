@@ -5,8 +5,8 @@ import { tileColors } from "../../../util/constants";
 import { Group } from "@visx/group";
 
 const Port = ({ resource, direction, center, width, pad, hover, ...props }) => {
-  const strokeWidth = hover ? 2 : 1;
-  const innerStrokeWidth = 1;
+  const strokeWidth = hover ? 3 : 2;
+  const innerStrokeWidth = strokeWidth - 2 * pad;
   const s = (width - 2 * pad) / 2 - strokeWidth / 2;
   const points = [center];
   let theta1 = undefined;
@@ -56,16 +56,15 @@ const Port = ({ resource, direction, center, width, pad, hover, ...props }) => {
     <Group>
       <polygon
         points={path}
-        stroke={`${color}`}
+        stroke={"black"}
         strokeWidth={strokeWidth}
         strokeLinejoin="round"
         fill="transparent"
       />
       <polygon
         points={path}
-        stroke="white"
+        stroke={`${color}`}
         strokeWidth={innerStrokeWidth}
-        strokeOpacity={hover ? 1.0 : 0.0}
         strokeLinejoin="round"
         fill="transparent"
       />
