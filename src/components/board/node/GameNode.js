@@ -1,7 +1,17 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 
-import { getCenterForIndex } from "../../../util/helpers";
+import {
+  getCenterForIndex,
+  getEdgeIndicesForNodeIndex,
+  getTileIndicesForNodeIndex,
+} from "../../../util/helpers";
+import {
+  getTilesForNode,
+  getResourceTilesForNode,
+  getPortsForNode,
+} from "../../../actions";
+
 import { NODE_CLICK } from "../../../util/constants";
 
 //// TODO: implement rendering of settlements and cities
@@ -14,7 +24,19 @@ import { NODE_CLICK } from "../../../util/constants";
 // };
 
 const GameNode = (props) => {
-  const { node, center, radius, onClick } = props;
+  const {
+    node,
+    center,
+    radius,
+    onClick,
+    getTilesForNode,
+    getResourceTilesForNode,
+    getPortsForNode,
+  } = props;
+  const tiles = getTilesForNode(node);
+  const resources = getResourceTilesForNode(node);
+  const ports = getPortsForNode(node);
+  // console.log(tiles);
   const [hover, setHover] = useState(false);
   // console.log(node, center, radius);
   return (
@@ -25,7 +47,15 @@ const GameNode = (props) => {
       y={center.y - radius}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      onClick={() => onClick(node)}
+      onClick={() =>
+        onClick({
+          node: node,
+          edges: getEdgeIndicesForNodeIndex(node),
+          tiles: tiles,
+          resources: resources,
+          ports: ports,
+        })
+      }
     >
       <circle
         cx={`${radius}`}
@@ -46,4 +76,8 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, {})(GameNode);
+export default connect(mapStateToProps, {
+  getTilesForNode,
+  getResourceTilesForNode,
+  getPortsForNode,
+})(GameNode);

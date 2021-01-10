@@ -3,13 +3,18 @@ import _ from "lodash";
 import { SET_BOARD_STATE, SET_BOARD_DIMENSIONS } from "./types";
 import {
   pips,
+  ports,
+  portCounts,
   tileCounts,
+  ANY,
   DESERT,
   RESOURCE,
   TILE,
   NODE,
   EDGE,
   WATER,
+  PORT_RESOURCE,
+  PORT_DIRECTION,
 } from "../util/constants";
 import {
   generateArrayFromCountDict,
@@ -17,6 +22,7 @@ import {
   generatePipPlacementArray,
   getEdgeIndicesForTileIndex,
   getNodeIndicesForTileIndex,
+  getTileIndicesForNodeIndex,
   getBoardLayout,
 } from "../util/helpers";
 
@@ -25,8 +31,9 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
   let nodes = [];
   let edges = [];
   // Take the dictionary of tile counts and turn it into a randomized array based
-  // on the tile counts.
+  // on the tile counts. Do the same for the port counts
   const randomizedTiles = generateArrayFromCountDict(tileCounts);
+  const randomizedPorts = generateArrayFromCountDict(portCounts);
   // always one ocean column on either side of the board
   const numLandCols = numCols - 2;
   const boardMiddle = parseInt(Math.floor(numCols / 2));
@@ -107,6 +114,13 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
     for (let row of rows) {
       let tileIndex = { row: row, col: col };
       let tile = { ...tileIndex };
+      // see if this is a port tile.
+      let port = _.find(ports, (port) => {
+        return port.tileIndex.row === row && port.tileIndex.col === col;
+      });
+      let portResource = port ? randomizedPorts.pop() : undefined;
+      tile[PORT_RESOURCE] = port ? portResource : undefined;
+      tile[PORT_DIRECTION] = port ? port[PORT_DIRECTION] : undefined;
       tile[RESOURCE] = WATER;
       oceanTiles.push(tile);
     }
@@ -138,4 +152,72 @@ export const setBoardDimensions = (
     type: SET_BOARD_DIMENSIONS,
     payload: layout,
   });
+};
+
+export const getTilesForNode = (node) => (dispatch, getState) => {
+  const state = getState();
+  const { board } = state;
+  const { tiles, oceanTiles } = board;
+  const allTiles = _.union(tiles, oceanTiles);
+  const tileIndices = getTileIndicesForNodeIndex(node);
+  return tileIndices.map((tidx) => {
+    let tMatch = _.find(allTiles, (t) => {
+      return t.row === tidx.row && t.col === tidx.col;
+    });
+    tMatch["direction"] = tidx["direction"];
+    return tMatch;
+  });
+};
+
+export const getResourceTilesForNode = (node) => (dispatch, getState) => {
+  const allTiles = getTilesForNode(node)(dispatch, getState);
+  const resourceTiles = _.filter(allTiles, (t) => t[RESOURCE] !== WATER);
+  return resourceTiles;
+};
+
+export const getPortsForNode = (node) => (dispatch, getState) => {
+  const allTiles = getTilesForNode(node)(dispatch, getState);
+  const portTiles = _.filter(
+    allTiles,
+    (t) => t[RESOURCE] === WATER && t[PORT_RESOURCE] !== undefined
+  );
+
+  const ret = portTiles.map((pt) => {
+    const { direction, PORT_RESOURCE, PORT_DIRECTION } = pt;
+    switch (direction) {
+      case "ll":
+        if (["ur", "dr"].includes(PORT_DIRECTION)) {
+          return PORT_RESOURCE;
+        }
+        break;
+      case "dl":
+        if (PORT_DIRECTION === "ur") {
+          return PORT_RESOURCE;
+        }
+        break;
+      case "ul":
+        if (PORT_DIRECTION === "dr") {
+          return PORT_RESOURCE;
+        }
+        break;
+      case "rr":
+        if (["ul", "dl"].includes(PORT_DIRECTION)) {
+          return PORT_RESOURCE;
+        }
+        break;
+      case "ur":
+        if (PORT_DIRECTION === "dl") {
+          return PORT_RESOURCE;
+        }
+        break;
+      case "dr":
+        if (PORT_DIRECTION === "ul") {
+          return PORT_RESOURCE;
+        }
+        break;
+      default:
+    }
+  });
+
+  return ret[0] ? ret : undefined;
 };
