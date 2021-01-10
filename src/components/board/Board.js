@@ -46,12 +46,10 @@ const Board = ({
     boardTiles.length === 0 &&
     boardNodes.length === 0
   ) {
-    const { tiles, oceanTiles, pips, nodes, edges } = board;
+    const { tiles, oceanTiles, nodes, edges } = board;
 
     tiles.forEach((tile, i) => {
-      let { row, col } = tile;
-      let pip = _.find(pips, (p) => p.row === row && p.col === col);
-      boardTiles.push(<GameTile tile={tile} key={i} pip={pip} />);
+      boardTiles.push(<GameTile tile={tile} key={i} />);
     });
 
     oceanTiles.forEach((tile, i) => {
