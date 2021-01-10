@@ -2,16 +2,11 @@ import _ from "lodash";
 
 import { SET_BOARD_STATE, SET_BOARD_DIMENSIONS } from "./types";
 import {
-  pips,
   ports,
   portCounts,
   tileCounts,
-  ANY,
   DESERT,
   RESOURCE,
-  TILE,
-  NODE,
-  EDGE,
   WATER,
   PORT_RESOURCE,
   PORT_DIRECTION,
@@ -58,6 +53,7 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
     // avoiding linting warning about unsafe references
     let columnNodes = [];
     let columnEdges = [];
+    let columnTiles = [];
     let dIndex = undefined;
     rowIndices.forEach((j, i) => {
       let tileIndex = { row: j, col: columnIndex };
@@ -69,7 +65,7 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
         dIndex = tileIndex;
       }
 
-      tiles.push(tile);
+      columnTiles.push(tile);
 
       let tileNodes = getNodeIndicesForTileIndex(tileIndex);
       columnNodes = _.unionBy(
@@ -91,12 +87,12 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
 
     nodes = _.unionBy(nodes, columnNodes, ({ row, col }) => `${row}${col}`);
     edges = _.unionBy(edges, columnEdges, ({ row, col }) => `${row}${col}`);
+    tiles = _.unionBy(tiles, columnTiles, ({ row, col }) => `${row}${col}`);
   }
 
   // generate ocean tiles
   let oceanTiles = [];
   let numRows = numCols * 2 - 1;
-  let middle = Math.floor(numCols / 2);
 
   for (let i = 0; i < numCols; i++) {
     let rowOffset = Math.abs(i - 3);
@@ -128,6 +124,18 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
 
   const pipPlacementArray = generatePipPlacementArray(centerIndex, desertIndex);
 
+  const tCopy = _.cloneDeep(tiles);
+  tiles = tCopy.map((t) => {
+    let tPip = _.find(
+      pipPlacementArray,
+      (p) => p.row === t.row && p.col === t.col
+    );
+    if (tPip) {
+      return { ...t, number: tPip.number };
+    }
+    return t;
+  });
+
   dispatch({
     type: SET_BOARD_STATE,
     payload: {
@@ -135,7 +143,6 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
       nodes: nodes,
       edges: edges,
       oceanTiles: oceanTiles,
-      pips: pipPlacementArray,
     },
   });
 };
@@ -164,8 +171,9 @@ export const getTilesForNode = (node) => (dispatch, getState) => {
     let tMatch = _.find(allTiles, (t) => {
       return t.row === tidx.row && t.col === tidx.col;
     });
-    tMatch["direction"] = tidx["direction"];
-    return tMatch;
+    let tMatchCopy = _.cloneDeep(tMatch);
+    tMatchCopy["direction"] = tidx["direction"];
+    return tMatchCopy;
   });
 };
 
@@ -188,34 +196,41 @@ export const getPortsForNode = (node) => (dispatch, getState) => {
       case "ll":
         if (["ur", "dr"].includes(PORT_DIRECTION)) {
           return PORT_RESOURCE;
+        } else {
+          return undefined;
         }
-        break;
       case "dl":
         if (PORT_DIRECTION === "ur") {
           return PORT_RESOURCE;
+        } else {
+          return undefined;
         }
-        break;
       case "ul":
         if (PORT_DIRECTION === "dr") {
           return PORT_RESOURCE;
+        } else {
+          return undefined;
         }
-        break;
       case "rr":
         if (["ul", "dl"].includes(PORT_DIRECTION)) {
           return PORT_RESOURCE;
+        } else {
+          return undefined;
         }
-        break;
       case "ur":
         if (PORT_DIRECTION === "dl") {
           return PORT_RESOURCE;
+        } else {
+          return undefined;
         }
-        break;
       case "dr":
         if (PORT_DIRECTION === "ul") {
           return PORT_RESOURCE;
+        } else {
+          return undefined;
         }
-        break;
       default:
+        return undefined;
     }
   });
 

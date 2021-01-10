@@ -20,25 +20,27 @@ import Port from "./Port";
 
 const GameTile = (props) => {
   const [hover, setHover] = useState(false);
-  const { width, height, center, pad, tile, pip, onClick } = props;
+  const { width, height, center, pad, tile, onClick } = props;
   const color = tileColors[tile[RESOURCE]];
 
   return (
     <Group
-      onClick={() => onClick({ tile: tile, pip: pip })}
+      onClick={() => onClick({ tile: tile })}
       opacity={hover ? 0.8 : 1.0}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
       <Hexagon width={width} center={center} pad={pad} background={color} />
-      {tile[RESOURCE] !== WATER && tile[RESOURCE] !== DESERT && pip && (
-        <Pip
-          center={center}
-          containerWidth={width}
-          number={pip.number}
-          radius={hover ? width / 5 : width / 6}
-        />
-      )}
+      {tile[RESOURCE] !== WATER &&
+        tile[RESOURCE] !== DESERT &&
+        tile["number"] && (
+          <Pip
+            center={center}
+            containerWidth={width}
+            number={tile.number}
+            radius={hover ? width / 5 : width / 6}
+          />
+        )}
       {tile[RESOURCE] === WATER && tile[PORT_RESOURCE] && (
         <Port
           resource={tile[PORT_RESOURCE]}
