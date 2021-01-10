@@ -143,10 +143,6 @@ export const getTileIndicesForNodeIndex = (nodeIndex) => {
   return arr;
 };
 
-export const getPortForNode = (node) => {
-  const tiles = getTileIndicesForNodeIndex(node);
-};
-
 // Get information about the board around a given edge
 
 export const getNodeIndicesForEdgeIndex = ({ row, col, direction }) => {

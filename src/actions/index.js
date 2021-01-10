@@ -171,8 +171,9 @@ export const getTilesForNode = (node) => (dispatch, getState) => {
     let tMatch = _.find(allTiles, (t) => {
       return t.row === tidx.row && t.col === tidx.col;
     });
-    tMatch["direction"] = tidx["direction"];
-    return tMatch;
+    let tMatchCopy = _.cloneDeep(tMatch);
+    tMatchCopy["direction"] = tidx["direction"];
+    return tMatchCopy;
   });
 };
 
