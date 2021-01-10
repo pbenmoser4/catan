@@ -5,8 +5,13 @@ import { Header } from "grommet";
 const AppHeader = (props) => {
   const { height } = props;
   return (
-    <Header background="light-2" pad="medium" height={`${height}px`}>
-      Hey sup
+    <Header
+      background="brand"
+      pad={{ left: "medium", right: "medium" }}
+      height={{ min: `${height}px`, max: `${height}px` }}
+      elevation="large"
+    >
+      CATAN!
     </Header>
   );
 };

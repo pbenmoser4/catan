@@ -1,27 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { getAppDimensionsForWindowBox } from "../../util/helpers";
 
 import { Box } from "grommet";
 
-import Board from "../board/Board";
-import GameBoard from "../board/GameBoard";
 import AppHeader from "../header/AppHeader";
+import BoardContainer from "./BoardContainer";
+import LeftSidebarContainer from "./LeftSidebarContainer";
+import RightSidebarContainer from "./RightSidebarContainer";
 
 const AppContainer = (props) => {
-  const svgDims = [0, 0, 100, 100];
-  const viewBoxString = svgDims.map((_) => String(_)).join(" ");
-  let width = window.innerWidth;
-  let height = window.innerHeight;
+  const [width, setWidth] = useState(window.innerWidth);
+  const [height, setHeight] = useState(window.innerHeight);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWidth(window.innerWidth);
+      setHeight(window.innerHeight);
+    };
+    window.addEventListener("resize", handleResize);
+  }, []);
 
   let dims = getAppDimensionsForWindowBox(width, height);
   return (
     <Box direction="column">
       <AppHeader height={dims.headerHeight} />
       <Box direction="row">
-        <GameBoard
-          svgDims={svgDims}
-          width={dims.boardWidth}
+        <LeftSidebarContainer
+          width={dims.sidebarWidth}
+          height={dims.boardHeight}
+        />
+        <BoardContainer width={dims.boardWidth} height={dims.boardHeight} />
+        <RightSidebarContainer
+          width={dims.sidebarWidth}
           height={dims.boardHeight}
         />
       </Box>

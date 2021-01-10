@@ -13,6 +13,7 @@ const GameBoard = ({ width, height, svgDims, background }) => {
         width="100%"
         height="100%"
         fill={background ? background : "white"}
+        fillOpacity={background ? 1.0 : 0.0}
       />
       <Board
         pad={boardPad}

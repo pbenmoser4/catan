@@ -389,12 +389,12 @@ export const generatePipPlacementArray = (centerIndex, desertIndex) => {
 
 // setting up the dimensions of components based on the size of the screen
 export const getAppDimensionsForWindowBox = (width, height) => {
-  const headerHeightRatio = 0.05;
+  const headerHeightRatio = 0.075;
   const sideMenuWidthRatio = 0.2;
   return {
     headerHeight: height * headerHeightRatio,
     boardHeight: height * (1 - headerHeightRatio),
-    sideMenuWidth: width * sideMenuWidthRatio,
+    sidebarWidth: width * sideMenuWidthRatio,
     boardWidth: width * (1 - 2 * sideMenuWidthRatio),
   };
 };
