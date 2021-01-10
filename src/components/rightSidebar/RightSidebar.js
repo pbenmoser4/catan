@@ -1,17 +1,23 @@
 import React from "react";
+
 import { Box } from "grommet";
 
+import ActionsPane from "./ActionsPane";
+
 const RightSidebar = ({ height, ...props }) => {
-  const actionsHeight = height / 2;
-  const handHeight = height / 2;
+  const actionsHeight = height / 3;
+  const handHeight = (height * 2) / 3;
   return (
-    <Box height={{ min: `${height}px`, max: `${height}px` }}>
+    <Box
+      height={{ min: `${height}px`, max: `${height}px` }}
+      border={{ side: "left", color: "black" }}
+    >
       <Box
         height={{ min: `${actionsHeight}px`, max: `${actionsHeight}px` }}
         background="dark-5"
         pad="small"
       >
-        Actions
+        <ActionsPane />
       </Box>
       <Box
         height={{ min: `${handHeight}px`, max: `${handHeight}px` }}
