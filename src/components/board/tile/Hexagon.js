@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Polygon } from "@visx/shape";
 
 const Hexagon = ({ width, center, pad, background, onClick, ...props }) => {
-  const [hover, setHover] = useState(false);
-
   const rotate = 0;
 
   if (!pad) {
@@ -26,20 +24,11 @@ const Hexagon = ({ width, center, pad, background, onClick, ...props }) => {
   }
 
   return (
-    <svg
-      width={width}
-      height={height}
-      x={x}
-      y={y}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      onClick={onClick}
-    >
+    <svg width={width} height={height} x={x} y={y} onClick={onClick}>
       <Polygon
         sides={6}
         size={shapeSide}
         fill={background}
-        fillOpacity={hover ? 0.75 : 1.0}
         rotate={rotate}
         center={shapeCenter}
       />

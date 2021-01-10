@@ -5,8 +5,9 @@ import { pipsForPipNumber } from "../../../util/helpers";
 
 import { Group } from "@visx/group";
 
-const Pip = ({ center, number, containerWidth, ...props }) => {
-  const r = containerWidth / 6;
+const Pip = ({ center, number, containerWidth, radius, ...props }) => {
+  // const r = containerWidth / 6;
+  const r = radius;
   const fillColor = [8, 6].includes(parseInt(number)) ? "red" : "black";
   return (
     <Group>

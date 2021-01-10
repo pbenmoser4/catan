@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-import { pips, EDGE, NODE, TILE } from "./constants";
+import { pips, ports, EDGE, NODE, TILE } from "./constants";
 
 export const generateArrayFromCountDict = (countDict, randomize = true) => {
   let arr = [];

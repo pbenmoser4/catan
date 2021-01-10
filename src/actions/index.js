@@ -3,13 +3,18 @@ import _ from "lodash";
 import { SET_BOARD_STATE, SET_BOARD_DIMENSIONS } from "./types";
 import {
   pips,
+  ports,
+  portCounts,
   tileCounts,
+  ANY,
   DESERT,
   RESOURCE,
   TILE,
   NODE,
   EDGE,
   WATER,
+  PORT_RESOURCE,
+  PORT_DIRECTION,
 } from "../util/constants";
 import {
   generateArrayFromCountDict,
@@ -25,8 +30,9 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
   let nodes = [];
   let edges = [];
   // Take the dictionary of tile counts and turn it into a randomized array based
-  // on the tile counts.
+  // on the tile counts. Do the same for the port counts
   const randomizedTiles = generateArrayFromCountDict(tileCounts);
+  const randomizedPorts = generateArrayFromCountDict(portCounts);
   // always one ocean column on either side of the board
   const numLandCols = numCols - 2;
   const boardMiddle = parseInt(Math.floor(numCols / 2));
@@ -107,6 +113,13 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
     for (let row of rows) {
       let tileIndex = { row: row, col: col };
       let tile = { ...tileIndex };
+      // see if this is a port tile.
+      let port = _.find(ports, (port) => {
+        return port.tileIndex.row === row && port.tileIndex.col === col;
+      });
+      let portResource = port ? randomizedPorts.pop() : undefined;
+      tile[PORT_RESOURCE] = port ? portResource : undefined;
+      tile[PORT_DIRECTION] = port ? port[PORT_DIRECTION] : undefined;
       tile[RESOURCE] = WATER;
       oceanTiles.push(tile);
     }
