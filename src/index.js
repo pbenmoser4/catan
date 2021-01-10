@@ -3,8 +3,10 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware, compose } from "redux";
 import reduxThunk from "redux-thunk";
+import { Grommet } from "grommet";
 
 import reducers from "./reducers";
+import { appTheme } from "./themes/appTheme";
 
 import App from "./components/App";
 
@@ -16,9 +18,9 @@ const store = createStore(
 
 ReactDOM.render(
   <Provider store={store}>
-    <React.StrictMode>
+    <Grommet theme={appTheme} full>
       <App />
-    </React.StrictMode>
+    </Grommet>
   </Provider>,
   document.getElementById("root")
 );

@@ -20,7 +20,9 @@ const Board = ({
 }) => {
   const { generateBoardState, setBoardDimensions, numCols } = props;
   useEffect(() => {
-    generateBoardState(numCols);
+    if (Object.keys(board).length === 0) {
+      generateBoardState(numCols);
+    }
     setBoardDimensions(containerBox, numCols, tilePadRatio, pad);
   }, [
     generateBoardState,
