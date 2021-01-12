@@ -1,6 +1,11 @@
 import _ from "lodash";
 
-import { SET_BOARD_STATE, SET_BOARD_DIMENSIONS } from "./types";
+import {
+  SET_BOARD_STATE,
+  SET_BOARD_DIMENSIONS,
+  SET_ROLL,
+  SET_ROLLING,
+} from "./types";
 import {
   ports,
   portCounts,
@@ -235,4 +240,20 @@ export const getPortsForNode = (node) => (dispatch, getState) => {
   });
 
   return ret[0] ? ret : undefined;
+};
+
+// Dice stuff babyyyy
+
+export const startRoll = () => (dispatch, getState) => {
+  dispatch({
+    type: SET_ROLLING,
+    payload: null,
+  });
+};
+
+export const endRoll = () => (dispatch, getState) => {
+  dispatch({
+    type: SET_ROLL,
+    payload: [Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)],
+  });
 };

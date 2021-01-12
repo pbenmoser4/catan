@@ -1,17 +1,20 @@
 import React from "react";
+
 import { Box } from "grommet";
 
-const LeftSidebar = ({ height, ...props }) => {
-  const playersHeight = height / 2;
+import GameStatePane from "./GameStatePane";
+
+const LeftSidebar = ({ height, width, ...props }) => {
+  const gameStateHeight = height / 2;
   const chatHeight = height / 2;
   return (
     <Box height={{ min: `${height}px`, max: `${height}px` }}>
       <Box
-        height={{ min: `${playersHeight}px`, max: `${playersHeight}px` }}
+        height={{ min: `${gameStateHeight}px`, max: `${gameStateHeight}px` }}
         background="dark-5"
-        pad="small"
+        pad="medium"
       >
-        Players
+        <GameStatePane width={width} pad={24} />
       </Box>
       <Box
         height={{ min: `${chatHeight}px`, max: `${chatHeight}px` }}
