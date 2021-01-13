@@ -17,6 +17,8 @@ export const USE = "USE";
 export const STEAL = "STEAL";
 export const PLACE = "PLACE";
 
+export const START_GAME = "START_GAME";
+
 export const PLACE_SETTLEMENT = "PLACE_SETTLEMENT";
 export const PLACE_CITY = "PLACE_CITY";
 

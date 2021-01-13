@@ -9,6 +9,7 @@ import {
   USE,
   STEAL,
   PLACE,
+  START_GAME,
 } from "../actions/types";
 
 const BASE_STATE = {
@@ -19,10 +20,13 @@ const BASE_STATE = {
   },
   rollOrder: [0],
   activePlayer: 0,
-  availableActions: [],
+  availableActions: [START_GAME, ROLL],
   turn: 0,
-  setupPhase: true,
+  setupPhase: false,
   gameplayPhase: false,
+  playerScores: {
+    0: 0,
+  },
   setup: {
     order: [0],
     phase: 0,
@@ -47,8 +51,15 @@ const gameStateReducer = (state = BASE_STATE, action) => {
       const newRollOrder = state.rollOrder;
       newRollOrder.push(id);
       const newSetup = state.setup;
+      const newPlayerScores = state.playerScores;
+      newPlayerScores[id] = 0;
       newSetup["order"] = newRollOrder;
-      return { ...state, rollOrder: newRollOrder, setup: newSetup };
+      return {
+        ...state,
+        rollOrder: newRollOrder,
+        setup: newSetup,
+        playerScores: newPlayerScores,
+      };
     default:
       return state;
   }

@@ -12,10 +12,10 @@ const availableIcons = [
   <Trigger size={iconSize} />,
 ];
 
-const basePlayer = (id, displayName) => {
+const basePlayer = (id, displayName, icon) => {
   return {
     id: id,
-    icon: availableIcons[id],
+    icon: icon,
     displayName: displayName,
     hand: {
       resources: {
@@ -37,7 +37,8 @@ const basePlayer = (id, displayName) => {
 };
 
 const BASE_STATE = {
-  players: [basePlayer(0, "Benito")],
+  players: [basePlayer(0, "Benito", availableIcons[0])],
+  thisPlayer: undefined,
 };
 
 const playersReducer = (state = BASE_STATE, action) => {
@@ -45,7 +46,10 @@ const playersReducer = (state = BASE_STATE, action) => {
     case ADD_PLAYER:
       const { displayName, id } = action.payload;
       const currentPlayers = _.clone(state.players);
-      currentPlayers.push(basePlayer(id, displayName));
+
+      currentPlayers.push(
+        basePlayer(id, displayName, availableIcons[currentPlayers.length])
+      );
 
       return { ...state, players: currentPlayers };
     default:

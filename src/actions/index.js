@@ -265,14 +265,19 @@ export const endRoll = () => (dispatch, getState) => {
 export const addPlayer = (displayName) => async (dispatch, getState) => {
   const currentPlayers = getState().players.players;
   const currentGameState = getState().gameState;
-  console.log(currentPlayers);
-  console.log(currentGameState);
+
+  const { setupPhase, gameplayPhase } = currentGameState;
+
   const existingPlayer = _.find(
     currentPlayers,
     (player) => player.displayName === displayName
   );
   if (existingPlayer) {
     throw new Error("Player already exists. Please choose another name.");
+  } else if (currentPlayers.length === 4) {
+    throw new Error("This game's full, find another, sucker!");
+  } else if (setupPhase || gameplayPhase) {
+    throw new Error("Gameplay has already begun! Sorry, sucker!");
   } else {
     const playerId = uuidv4();
     dispatch({

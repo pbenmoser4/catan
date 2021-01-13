@@ -4,18 +4,38 @@ import { connect } from "react-redux";
 import { Box, Button, Text } from "grommet";
 
 import { startRoll } from "../../actions";
+import {
+  ROLL,
+  BUILD,
+  BUY,
+  TRADE,
+  USE,
+  STEAL,
+  PLACE,
+  START_GAME,
+} from "../../actions/types";
 
 const ActionsPane = (props) => {
-  const { startRoll } = props;
+  const { startRoll, availableActions } = props;
+
+  const actionButtons = {};
+  actionButtons[START_GAME] = <Button key={START_GAME} label="Start Game" />;
+  actionButtons[ROLL] = <Button key={ROLL} label="Roll" onClick={startRoll} />;
+
   return (
     <Box direction="column" gap="small" align="center">
       <Text>Actions</Text>
-      <Button label="Roll" onClick={() => startRoll()} />
-      <Button label="Build" />
-      <Button label="Buy" />
-      <Button label="Trade" />
+      {availableActions.map((action) => actionButtons[action])}
     </Box>
   );
 };
 
-export default connect(null, { startRoll })(ActionsPane);
+const mapStateToProps = (state) => {
+  const { availableActions } = state.gameState;
+  console.log(availableActions);
+  return {
+    availableActions: availableActions,
+  };
+};
+
+export default connect(mapStateToProps, { startRoll })(ActionsPane);
