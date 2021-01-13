@@ -14,6 +14,13 @@ export const WHEAT = "WHEAT";
 export const WOOD = "WOOD";
 export const ANY = "ANY";
 
+export const DEVELOPMENT_CARD = "DEVELOPMENT_CARD";
+export const KNIGHT = "KNIGHT";
+export const ROAD_BUILDING = "ROAD_BUILDING";
+export const YEAR_OF_PLENTY = "YEAR_OF_PLENTY";
+export const MONOPOLY = "MONOPOLY";
+export const VICTORY_POINT = "VICTORY_POINT";
+
 export const tileColors = {};
 tileColors[BRICK] = "#A61603";
 tileColors[DESERT] = "#F5E8A9";

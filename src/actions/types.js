@@ -8,3 +8,16 @@ export const SET_EDGE_CLICK_ACTION = "SET_EDGE_CLICK_ACTION";
 
 export const SET_ROLL = "SET_ROLL";
 export const SET_ROLLING = "SET_ROLLING";
+
+export const ROLL = "ROLL";
+export const BUILD = "BUILD";
+export const BUY = "BUY";
+export const TRADE = "TRADE";
+export const USE = "USE";
+export const STEAL = "STEAL";
+export const PLACE = "PLACE";
+
+export const PLACE_SETTLEMENT = "PLACE_SETTLEMENT";
+export const PLACE_CITY = "PLACE_CITY";
+
+export const ADD_PLAYER = "ADD_PLAYER";
