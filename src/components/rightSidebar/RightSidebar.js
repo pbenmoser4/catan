@@ -5,8 +5,8 @@ import { Box } from "grommet";
 import ActionsPane from "./ActionsPane";
 
 const RightSidebar = ({ height, ...props }) => {
-  const actionsHeight = height / 3;
-  const handHeight = (height * 2) / 3;
+  const actionsHeight = (height * 2) / 5;
+  const handHeight = (height * 3) / 5;
   return (
     <Box
       height={{ min: `${height}px`, max: `${height}px` }}

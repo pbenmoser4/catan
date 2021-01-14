@@ -72,3 +72,24 @@ export const tileFormat = {
 export const NODE_CLICK = "NODE_CLICK";
 export const TILE_CLICK = "TILE_CLICK";
 export const EDGE_CLICK = "EDGE_CLICK";
+
+export const BUILD = "BUILD";
+export const BUY = "BUY";
+export const END = "END";
+export const PLACE = "PLACE";
+export const ROLL = "ROLL";
+export const START = "START";
+export const STEAL = "STEAL";
+export const TRADE = "TRADE";
+export const USE = "USE";
+
+export const actionLabels = {};
+actionLabels[BUILD] = "Build";
+actionLabels[BUY] = "Buy";
+actionLabels[END] = "End Turn";
+actionLabels[PLACE] = "Place Item";
+actionLabels[ROLL] = "Roll";
+actionLabels[START] = "Start Game";
+actionLabels[STEAL] = "Steal";
+actionLabels[TRADE] = "Propose Trade";
+actionLabels[USE] = "Use Development Card";

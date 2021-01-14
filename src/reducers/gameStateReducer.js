@@ -2,15 +2,19 @@ import {
   ADD_PLAYER,
   SET_ROLL,
   SET_ROLLING,
+  START_GAME,
+} from "../actions/types";
+
+import {
   ROLL,
   BUILD,
   BUY,
   TRADE,
   USE,
   STEAL,
+  START,
   PLACE,
-  START_GAME,
-} from "../actions/types";
+} from "../util/constants";
 
 const BASE_STATE = {
   dice: {
@@ -20,7 +24,7 @@ const BASE_STATE = {
   },
   rollOrder: [0],
   activePlayer: 0,
-  availableActions: [START_GAME, ROLL],
+  availableActions: [START],
   turn: 0,
   setupPhase: false,
   gameplayPhase: false,
@@ -30,6 +34,11 @@ const BASE_STATE = {
   setup: {
     order: [0],
     phase: 0,
+  },
+  devMode: true,
+  turn: {
+    action: null,
+    player: null,
   },
 };
 
