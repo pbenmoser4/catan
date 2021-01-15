@@ -6,11 +6,12 @@ import { Box, Text } from "grommet";
 import { endRoll } from "../../actions";
 
 import Dice from "./dice/Dice";
+import Players from "../player/Players";
 
 const GameStatePane = ({ width, pad, ...props }) => {
-  let { dice, endRoll } = props;
+  let { dice, endRoll, players } = props;
   return (
-    <Box align="center">
+    <Box align="center" direction="column" gap="small">
       <Box direction="column" align="center" gap="small" pad="small">
         <Dice
           width={width}
@@ -23,6 +24,7 @@ const GameStatePane = ({ width, pad, ...props }) => {
           {dice.roll}
         </Text>
       </Box>
+      <Players players={players} />
     </Box>
   );
 };
@@ -30,6 +32,7 @@ const GameStatePane = ({ width, pad, ...props }) => {
 const mapStateToProps = (state, ownProps) => {
   return {
     dice: state.gameState.dice,
+    players: state.players.players,
   };
 };
 

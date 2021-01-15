@@ -2,20 +2,13 @@ import _ from "lodash";
 import { Diamond, IceCream, Launch, Trigger } from "grommet-icons";
 
 import { ADD_PLAYER } from "../actions/types";
+import { availableIcons, playerColors } from "../util/constants";
 
-const iconSize = "small";
-
-const availableIcons = [
-  <Diamond size={iconSize} />,
-  <IceCream size={iconSize} />,
-  <Launch size={iconSize} />,
-  <Trigger size={iconSize} />,
-];
-
-const basePlayer = (id, displayName, icon) => {
+const basePlayer = (id, displayName, icon, color) => {
   return {
     id: id,
     icon: icon,
+    color: color,
     displayName: displayName,
     hand: {
       resources: {
@@ -37,8 +30,7 @@ const basePlayer = (id, displayName, icon) => {
 };
 
 const BASE_STATE = {
-  players: [basePlayer(0, "Benito", availableIcons[0])],
-  thisPlayer: undefined,
+  players: [],
 };
 
 const playersReducer = (state = BASE_STATE, action) => {
@@ -48,7 +40,12 @@ const playersReducer = (state = BASE_STATE, action) => {
       const currentPlayers = _.clone(state.players);
 
       currentPlayers.push(
-        basePlayer(id, displayName, availableIcons[currentPlayers.length])
+        basePlayer(
+          id,
+          displayName,
+          availableIcons[currentPlayers.length],
+          playerColors[currentPlayers.length]
+        )
       );
 
       return { ...state, players: currentPlayers };

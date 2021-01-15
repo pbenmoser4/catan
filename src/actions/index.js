@@ -272,7 +272,8 @@ export const addPlayer = (displayName) => async (dispatch, getState) => {
     currentPlayers,
     (player) => player.displayName === displayName
   );
-  if (existingPlayer) {
+  if (false) {
+    //// TODO: change this back to "existingPlayer"
     throw new Error("Player already exists. Please choose another name.");
   } else if (currentPlayers.length === 4) {
     throw new Error("This game's full, find another, sucker!");

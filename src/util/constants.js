@@ -1,3 +1,5 @@
+import { Diamond, IceCream, Launch, Trigger } from "grommet-icons";
+
 export const TILE = "TILE";
 export const NODE = "NODE";
 export const EDGE = "EDGE";
@@ -16,10 +18,18 @@ export const ANY = "ANY";
 
 export const DEVELOPMENT_CARD = "DEVELOPMENT_CARD";
 export const KNIGHT = "KNIGHT";
-export const ROAD_BUILDING = "ROAD_BUILDING";
-export const YEAR_OF_PLENTY = "YEAR_OF_PLENTY";
 export const MONOPOLY = "MONOPOLY";
+export const ROAD_BUILDING = "ROAD_BUILDING";
 export const VICTORY_POINT = "VICTORY_POINT";
+export const YEAR_OF_PLENTY = "YEAR_OF_PLENTY";
+
+//// TODO: Fill in the "Name" and "Description" for each type of d card
+export const developmentCardText = {};
+developmentCardText[KNIGHT] = { name: "", description: "" };
+developmentCardText[MONOPOLY] = { name: "", description: "" };
+developmentCardText[ROAD_BUILDING] = { name: "", description: "" };
+developmentCardText[VICTORY_POINT] = { name: "", description: "" };
+developmentCardText[YEAR_OF_PLENTY] = { name: "", description: "" };
 
 export const tileColors = {};
 tileColors[BRICK] = "#A61603";
@@ -93,3 +103,21 @@ actionLabels[START] = "Start Game";
 actionLabels[STEAL] = "Steal";
 actionLabels[TRADE] = "Propose Trade";
 actionLabels[USE] = "Use Development Card";
+
+export const playerColors = [
+  "#D41C0B", // Red
+  "#EDCB0C", // Yellow
+  "#FFFFFA", // White
+  "#0669E3", // Blue
+];
+
+const iconSize = "medium";
+export const availableIcons = [
+  <Diamond size={iconSize} />,
+  <IceCream size={iconSize} />,
+  <Launch size={iconSize} />,
+  <Trigger size={iconSize} />,
+];
+
+export const developmentCardColor = "#8F92B3";
+export const resourceCardColor = "#B3AB8F";
