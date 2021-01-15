@@ -1,4 +1,5 @@
 import React from "react";
+
 import { getAppDimensionsForWindowBox } from "../../util/helpers";
 
 import Board from "./Board";

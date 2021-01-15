@@ -24,7 +24,7 @@ const BASE_STATE = {
   },
   rollOrder: [],
   activePlayer: 0,
-  availableActions: [START],
+  availableActions: [START, ROLL],
   turn: 0,
   setupPhase: false,
   gameplayPhase: false,
