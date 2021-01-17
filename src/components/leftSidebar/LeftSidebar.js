@@ -8,7 +8,10 @@ const LeftSidebar = ({ height, width, ...props }) => {
   const gameStateHeight = (height * 2) / 3;
   const chatHeight = height / 3;
   return (
-    <Box height={{ min: `${height}px`, max: `${height}px` }}>
+    <Box
+      height={{ min: `${height}px`, max: `${height}px` }}
+      border={{ side: "right", color: "black" }}
+    >
       <Box
         height={{ min: `${gameStateHeight}px`, max: `${gameStateHeight}px` }}
         background="dark-5"

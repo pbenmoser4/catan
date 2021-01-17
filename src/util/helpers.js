@@ -413,3 +413,15 @@ export const getAppDimensionsForWindowBox = (width, height) => {
     boardWidth: width * (1 - 2 * sideMenuWidthRatio),
   };
 };
+
+// hand methods
+
+export const getCardCountForHand = (hand) => {
+  return _.reduce(
+    hand,
+    (result, value, key) => {
+      return (result += value);
+    },
+    0
+  );
+};

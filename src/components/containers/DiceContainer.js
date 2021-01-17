@@ -13,6 +13,7 @@ const DiceContainer = ({ width, height, ...props }) => {
     <Box
       height={{ min: `${height}px`, max: `${height}px` }}
       width={{ min: `${width}px`, max: `${width}px` }}
+      border={{ side: "bottom", color: "black" }}
       background="light-5"
       justify="center"
       align="center"

@@ -119,5 +119,5 @@ export const availableIcons = [
   <Trigger size={iconSize} />,
 ];
 
-export const developmentCardColor = "#8F92B3";
-export const resourceCardColor = "#B3AB8F";
+export const developmentCardColor = "#B3AB8F";
+export const resourceCardColor = "#825900";

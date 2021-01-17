@@ -45,7 +45,6 @@ const ActionsPane = (props) => {
 
 const mapStateToProps = (state) => {
   const { availableActions } = state.gameState;
-  console.log(availableActions);
   return {
     availableActions: availableActions,
   };

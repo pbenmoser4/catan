@@ -6,10 +6,11 @@ import { Box } from "grommet";
 import Players from "../player/Players";
 
 const GameStatePane = ({ width, pad, ...props }) => {
-  let { players } = props;
+  let { players, activePlayerId } = props;
+
   return (
-    <Box align="center" direction="column" gap="small">
-      <Players players={players} />
+    <Box align="center">
+      <Players players={players} activePlayerId={activePlayerId} />
     </Box>
   );
 };
@@ -17,6 +18,7 @@ const GameStatePane = ({ width, pad, ...props }) => {
 const mapStateToProps = (state, ownProps) => {
   return {
     players: state.players.players,
+    activePlayerId: state.gameState.activePlayerId,
   };
 };
 

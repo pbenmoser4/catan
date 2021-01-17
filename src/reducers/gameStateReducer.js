@@ -23,8 +23,8 @@ const BASE_STATE = {
     roll: 2,
   },
   rollOrder: [],
-  activePlayer: 0,
-  availableActions: [START, ROLL],
+  activePlayerId: 0,
+  availableActions: [START],
   turn: 0,
   setupPhase: false,
   gameplayPhase: false,
@@ -61,11 +61,20 @@ const gameStateReducer = (state = BASE_STATE, action) => {
       const newPlayerScores = state.playerScores;
       newPlayerScores[id] = 0;
       newSetup["order"] = newRollOrder;
+
+      let newActivePlayerId = state.activePlayerId;
+
+      if (state.devMode) {
+        // set the active player to the just created player
+        newActivePlayerId = id;
+      }
+
       return {
         ...state,
         rollOrder: newRollOrder,
         setup: newSetup,
         playerScores: newPlayerScores,
+        activePlayerId: newActivePlayerId,
       };
     default:
       return state;
