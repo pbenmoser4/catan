@@ -73,7 +73,7 @@ const BASE_STATE_TESTING = {
     basePlayer(0, "Ben", availableIcons[0], playerColors[0], true, true),
     basePlayer(uuidv4(), "Maddie", availableIcons[1], playerColors[1]),
     basePlayer(uuidv4(), "Benedict", availableIcons[2], playerColors[2]),
-    basePlayer(uuidv4(), "LONGNAME", availableIcons[3], playerColors[3]),
+    basePlayer(uuidv4(), "Alison", availableIcons[3], playerColors[3]),
   ],
   rollOrder: [],
   setupOrder: [],

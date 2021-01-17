@@ -29,7 +29,7 @@ const Road = ({ startCoords, endCoords, color, strokeWidth, ...props }) => {
         x2={x2}
         y2={y2}
         stroke="black"
-        strokeWidth={`${strokeWidth * 1.25}`}
+        strokeWidth={`${strokeWidth * 1.4}`}
         strokeLinecap="square"
       />
       <line
