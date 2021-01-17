@@ -41,7 +41,7 @@ const Die = ({
     }
   }, [animating]);
 
-  const strokeWidth = 0;
+  const strokeWidth = 0.1;
 
   return (
     <Group>

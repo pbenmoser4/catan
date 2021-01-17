@@ -6,6 +6,7 @@ import { Box } from "grommet";
 
 import AppHeader from "../header/AppHeader";
 import BoardContainer from "./BoardContainer";
+import DiceContainer from "./DiceContainer";
 import LeftSidebarContainer from "./LeftSidebarContainer";
 import RightSidebarContainer from "./RightSidebarContainer";
 
@@ -28,12 +29,15 @@ const AppContainer = (props) => {
       <Box direction="row">
         <LeftSidebarContainer
           width={dims.sidebarWidth}
-          height={dims.boardHeight}
+          height={dims.sidebarHeight}
         />
-        <BoardContainer width={dims.boardWidth} height={dims.boardHeight} />
+        <Box direction="column">
+          <DiceContainer width={dims.boardWidth} height={dims.dicePaneHeight} />
+          <BoardContainer width={dims.boardWidth} height={dims.boardHeight} />
+        </Box>
         <RightSidebarContainer
           width={dims.sidebarWidth}
-          height={dims.boardHeight}
+          height={dims.sidebarHeight}
         />
       </Box>
     </Box>

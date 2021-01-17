@@ -1,10 +1,36 @@
-import { SET_ROLL, SET_ROLLING } from "../actions/types";
+import {
+  ADD_PLAYER,
+  SET_ROLL,
+  SET_ROLLING,
+  START_GAME,
+} from "../actions/types";
+
+import {
+  ROLL,
+  BUILD,
+  BUY,
+  TRADE,
+  USE,
+  STEAL,
+  START,
+  PLACE,
+} from "../util/constants";
 
 const BASE_STATE = {
   dice: {
     rolling: false,
     numbers: [1, 1],
     roll: 2,
+  },
+  activePlayerId: 0,
+  availableActions: [START],
+  turn: 0,
+  setupPhase: false,
+  gameplayPhase: false,
+  devMode: true,
+  turn: {
+    action: null,
+    player: null,
   },
 };
 
@@ -20,6 +46,20 @@ const gameStateReducer = (state = BASE_STATE, action) => {
       return {
         ...state,
         dice: { rolling: true, numbers: currentNumbers, roll: currentRoll },
+      };
+    case ADD_PLAYER:
+      const { id } = action.payload;
+
+      let newActivePlayerId = state.activePlayerId;
+
+      if (state.devMode) {
+        // set the active player to the just created player
+        newActivePlayerId = id;
+      }
+
+      return {
+        ...state,
+        activePlayerId: newActivePlayerId,
       };
     default:
       return state;

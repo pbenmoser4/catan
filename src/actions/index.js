@@ -1,10 +1,12 @@
 import _ from "lodash";
+import { v4 as uuidv4 } from "uuid";
 
 import {
   SET_BOARD_STATE,
   SET_BOARD_DIMENSIONS,
   SET_ROLL,
   SET_ROLLING,
+  ADD_PLAYER,
 } from "./types";
 import {
   ports,
@@ -257,3 +259,36 @@ export const endRoll = () => (dispatch, getState) => {
     payload: [Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)],
   });
 };
+
+// player creation actions
+
+export const addPlayer = (displayName) => async (dispatch, getState) => {
+  const currentPlayers = getState().players.players;
+  const currentGameState = getState().gameState;
+
+  const { setupPhase, gameplayPhase } = currentGameState;
+
+  const existingPlayer = _.find(
+    currentPlayers,
+    (player) => player.displayName === displayName
+  );
+  if (existingPlayer) {
+    throw new Error("Player already exists. Please choose another name.");
+  } else if (currentPlayers.length === 4) {
+    throw new Error("This game's full, find another, sucker!");
+  } else if (setupPhase || gameplayPhase) {
+    throw new Error("Gameplay has already begun! Sorry, sucker!");
+  } else {
+    const playerId = uuidv4();
+    dispatch({
+      type: ADD_PLAYER,
+      payload: {
+        displayName: displayName,
+        id: playerId,
+      },
+    });
+    return `Created new player: ${displayName}`;
+  }
+};
+
+// gameplay actions

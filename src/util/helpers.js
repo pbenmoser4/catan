@@ -402,11 +402,26 @@ export const generatePipPlacementArray = (centerIndex, desertIndex) => {
 // setting up the dimensions of components based on the size of the screen
 export const getAppDimensionsForWindowBox = (width, height) => {
   const headerHeightRatio = 0.075;
+  const dicePaneHeightRatio = 0.1;
   const sideMenuWidthRatio = 0.2;
   return {
     headerHeight: height * headerHeightRatio,
-    boardHeight: height * (1 - headerHeightRatio),
+    dicePaneHeight: height * dicePaneHeightRatio,
+    boardHeight: height * (1 - headerHeightRatio - dicePaneHeightRatio),
+    sidebarHeight: height * (1 - headerHeightRatio),
     sidebarWidth: width * sideMenuWidthRatio,
     boardWidth: width * (1 - 2 * sideMenuWidthRatio),
   };
+};
+
+// hand methods
+
+export const getCardCountForHand = (hand) => {
+  return _.reduce(
+    hand,
+    (result, value, key) => {
+      return (result += value);
+    },
+    0
+  );
 };

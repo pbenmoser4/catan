@@ -1,3 +1,5 @@
+import { Diamond, IceCream, Launch, Trigger } from "grommet-icons";
+
 export const TILE = "TILE";
 export const NODE = "NODE";
 export const EDGE = "EDGE";
@@ -13,6 +15,21 @@ export const WATER = "WATER";
 export const WHEAT = "WHEAT";
 export const WOOD = "WOOD";
 export const ANY = "ANY";
+
+export const DEVELOPMENT_CARD = "DEVELOPMENT_CARD";
+export const KNIGHT = "KNIGHT";
+export const MONOPOLY = "MONOPOLY";
+export const ROAD_BUILDING = "ROAD_BUILDING";
+export const VICTORY_POINT = "VICTORY_POINT";
+export const YEAR_OF_PLENTY = "YEAR_OF_PLENTY";
+
+//// TODO: Fill in the "Name" and "Description" for each type of d card
+export const developmentCardText = {};
+developmentCardText[KNIGHT] = { name: "", description: "" };
+developmentCardText[MONOPOLY] = { name: "", description: "" };
+developmentCardText[ROAD_BUILDING] = { name: "", description: "" };
+developmentCardText[VICTORY_POINT] = { name: "", description: "" };
+developmentCardText[YEAR_OF_PLENTY] = { name: "", description: "" };
 
 export const tileColors = {};
 tileColors[BRICK] = "#A61603";
@@ -65,3 +82,42 @@ export const tileFormat = {
 export const NODE_CLICK = "NODE_CLICK";
 export const TILE_CLICK = "TILE_CLICK";
 export const EDGE_CLICK = "EDGE_CLICK";
+
+export const BUILD = "BUILD";
+export const BUY = "BUY";
+export const END = "END";
+export const PLACE = "PLACE";
+export const ROLL = "ROLL";
+export const START = "START";
+export const STEAL = "STEAL";
+export const TRADE = "TRADE";
+export const USE = "USE";
+
+export const actionLabels = {};
+actionLabels[BUILD] = "Build";
+actionLabels[BUY] = "Buy";
+actionLabels[END] = "End Turn";
+actionLabels[PLACE] = "Place Item";
+actionLabels[ROLL] = "Roll";
+actionLabels[START] = "Start Game";
+actionLabels[STEAL] = "Steal";
+actionLabels[TRADE] = "Propose Trade";
+actionLabels[USE] = "Use Development Card";
+
+export const playerColors = [
+  "#D41C0B", // Red
+  "#EDCB0C", // Yellow
+  "#FFFFFA", // White
+  "#0669E3", // Blue
+];
+
+const iconSize = "medium";
+export const availableIcons = [
+  <Diamond size={iconSize} />,
+  <IceCream size={iconSize} />,
+  <Launch size={iconSize} />,
+  <Trigger size={iconSize} />,
+];
+
+export const developmentCardColor = "#B3AB8F";
+export const resourceCardColor = "#825900";

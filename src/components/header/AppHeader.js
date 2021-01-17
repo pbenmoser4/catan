@@ -1,9 +1,20 @@
 import React from "react";
+import { connect } from "react-redux";
 
-import { Header } from "grommet";
+import { addPlayer } from "../../actions";
+
+import { Button, Header, Text } from "grommet";
+
+const addPlayerButtonClicked = (name, addPlayerFunction) => {
+  addPlayerFunction(name)
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((e) => console.log(e.message));
+};
 
 const AppHeader = (props) => {
-  const { height } = props;
+  const { height, addPlayer } = props;
   return (
     <Header
       background="brand"
@@ -11,9 +22,13 @@ const AppHeader = (props) => {
       height={{ min: `${height}px`, max: `${height}px` }}
       elevation="large"
     >
-      CATAN!
+      <Text>CATAN!</Text>
+      <Button
+        label="add player"
+        onClick={() => addPlayerButtonClicked("John", addPlayer)}
+      />
     </Header>
   );
 };
 
-export default AppHeader;
+export default connect(null, { addPlayer })(AppHeader);

@@ -1,36 +1,25 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { Box, Text } from "grommet";
+import { Box } from "grommet";
 
-import { endRoll } from "../../actions";
-
-import Dice from "./dice/Dice";
+import Players from "../player/Players";
 
 const GameStatePane = ({ width, pad, ...props }) => {
-  let { dice, endRoll } = props;
+  let { players, activePlayerId } = props;
+
   return (
     <Box align="center">
-      <Box direction="column" align="center" gap="small" pad="small">
-        <Dice
-          width={width}
-          pad={pad}
-          animating={dice.rolling}
-          onAnimationFinished={endRoll}
-          numbers={dice.numbers}
-        />
-        <Text size="large" wight="heavy">
-          {dice.roll}
-        </Text>
-      </Box>
+      <Players players={players} activePlayerId={activePlayerId} />
     </Box>
   );
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    dice: state.gameState.dice,
+    players: state.players.players,
+    activePlayerId: state.gameState.activePlayerId,
   };
 };
 
-export default connect(mapStateToProps, { endRoll })(GameStatePane);
+export default connect(mapStateToProps, {})(GameStatePane);
