@@ -6,6 +6,7 @@ import {
   SET_BOARD_DIMENSIONS,
   SET_ROLL,
   SET_ROLLING,
+  START_GAME,
   ADD_PLAYER,
 } from "./types";
 import {
@@ -292,3 +293,20 @@ export const addPlayer = (displayName) => async (dispatch, getState) => {
 };
 
 // gameplay actions
+
+export const startGame = () => async (dispatch, getState) => {
+  const { players } = getState().players;
+  const { thisPlayerId, gameOwnerId } = getState().gameState;
+
+  const gameOwner = _.find(players, (player) => player.id === gameOwnerId);
+  const ownerName = gameOwner.displayName;
+
+  if (thisPlayerId === gameOwnerId) {
+    dispatch({
+      type: START_GAME,
+      payload: null,
+    });
+  } else {
+    throw new Error(`Only ${ownerName} can start the gamee!`);
+  }
+};

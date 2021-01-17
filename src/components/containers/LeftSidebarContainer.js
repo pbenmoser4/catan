@@ -5,7 +5,7 @@ import LeftSidebar from "../leftSidebar/LeftSidebar";
 
 const LeftSidebarContainer = ({ width, height, ...props }) => {
   return (
-    <Box background="light-5" width={{ min: `${width}px`, max: `${width}px` }}>
+    <Box width={{ min: `${width}px`, max: `${width}px` }}>
       <LeftSidebar height={height} width={width} />
     </Box>
   );

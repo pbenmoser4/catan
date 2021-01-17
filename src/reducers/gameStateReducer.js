@@ -5,25 +5,14 @@ import {
   START_GAME,
 } from "../actions/types";
 
-import {
-  ROLL,
-  BUILD,
-  BUY,
-  TRADE,
-  USE,
-  STEAL,
-  START,
-  PLACE,
-} from "../util/constants";
-
 const BASE_STATE = {
   dice: {
     rolling: false,
     numbers: [1, 1],
     roll: 2,
   },
-  activePlayerId: 0,
-  availableActions: [START],
+  thisPlayerId: 0,
+  gameOwnerId: 0,
   turn: 0,
   setupPhase: false,
   gameplayPhase: false,
@@ -50,17 +39,19 @@ const gameStateReducer = (state = BASE_STATE, action) => {
     case ADD_PLAYER:
       const { id } = action.payload;
 
-      let newActivePlayerId = state.activePlayerId;
+      let newThisPlayerId = state.thisPlayerId;
 
       if (state.devMode) {
         // set the active player to the just created player
-        newActivePlayerId = id;
+        newThisPlayerId = id;
       }
 
       return {
         ...state,
-        activePlayerId: newActivePlayerId,
+        thisPlayerId: newThisPlayerId,
       };
+    case START_GAME:
+      console.log("let's do what we came into the room to do.");
     default:
       return state;
   }

@@ -1,9 +1,10 @@
+import _ from "lodash";
 import React from "react";
 import { connect } from "react-redux";
 
 import { Box, Button, Text } from "grommet";
 
-import { startRoll } from "../../actions";
+import { startRoll, startGame } from "../../actions";
 import {
   BUILD,
   BUY,
@@ -22,7 +23,7 @@ const actionButton = (key, func) => {
 };
 
 const ActionsPane = (props) => {
-  const { startRoll, availableActions } = props;
+  const { startRoll, startGame, availableActions } = props;
 
   const actionButtons = {};
   actionButtons[BUILD] = actionButton(BUILD, () => console.log("Build"));
@@ -30,7 +31,7 @@ const ActionsPane = (props) => {
   actionButtons[END] = actionButton(END, () => console.log("End Turn"));
   actionButtons[PLACE] = actionButton(PLACE, () => console.log("Place"));
   actionButtons[ROLL] = actionButton(ROLL, () => startRoll());
-  actionButtons[START] = actionButton(START, () => console.log("start"));
+  actionButtons[START] = actionButton(START, () => startGame());
   actionButtons[STEAL] = actionButton(STEAL, () => console.log("steal"));
   actionButtons[TRADE] = actionButton(TRADE, () => console.log("Trade"));
   actionButtons[USE] = actionButton(USE, () => console.log("Use D Card"));
@@ -44,10 +45,18 @@ const ActionsPane = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const { availableActions } = state.gameState;
+  // const { availableActions } = state.gameState;
+
+  const { thisPlayerId } = state.gameState;
+  const thisPlayer = _.find(
+    state.players.players,
+    (player) => player.id === thisPlayerId
+  );
+
+  const { availableActions } = thisPlayer;
   return {
     availableActions: availableActions,
   };
 };
 
-export default connect(mapStateToProps, { startRoll })(ActionsPane);
+export default connect(mapStateToProps, { startRoll, startGame })(ActionsPane);

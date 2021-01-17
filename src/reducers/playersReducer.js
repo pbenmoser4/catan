@@ -2,12 +2,26 @@ import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 import { Diamond, IceCream, Launch, Trigger } from "grommet-icons";
 
-import { ADD_PLAYER } from "../actions/types";
-import { availableIcons, playerColors } from "../util/constants";
+import { ADD_PLAYER, START_GAME } from "../actions/types";
 
-const basePlayer = (id, displayName, icon, color) => {
+import {
+  ROLL,
+  BUILD,
+  BUY,
+  TRADE,
+  USE,
+  STEAL,
+  START,
+  PLACE,
+  availableIcons,
+  playerColors,
+} from "../util/constants";
+
+const basePlayer = (id, displayName, icon, color, isActive = false) => {
   return {
     id: id,
+    isActive: isActive, // maybe
+    availableActions: [START],
     icon: icon,
     color: color,
     displayName: displayName,
@@ -33,7 +47,7 @@ const basePlayer = (id, displayName, icon, color) => {
 
 const BASE_STATE_TESTING = {
   players: [
-    basePlayer(uuidv4(), "Ben", availableIcons[0], playerColors[0]),
+    basePlayer(0, "Ben", availableIcons[0], playerColors[0], true),
     basePlayer(uuidv4(), "Maddie", availableIcons[1], playerColors[1]),
     basePlayer(uuidv4(), "Benedict", availableIcons[2], playerColors[2]),
     basePlayer(uuidv4(), "LONGNAME", availableIcons[3], playerColors[3]),
