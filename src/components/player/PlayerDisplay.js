@@ -8,12 +8,15 @@ import { getCardCountForHand } from "../../util/helpers";
 
 import HiddenDevelopmentCard from "../cards/HiddenDevelopmentCard";
 import HiddenResourceCard from "../cards/HiddenResourceCard";
+import DevelopmentCard from "../cards/DevelopmentCard";
 
-const PlayerDisplay = ({ player, thisPlayer, ...props }) => {
-  const { hand, isActive } = player;
-  console.log(player.displayName, isActive);
+const PlayerDisplay = ({ player, ...props }) => {
+  const { hand, isActive, isThisPlayer } = player;
   const numDevelopmentCards = getCardCountForHand(hand.developmentCards);
   const numResourceCards = getCardCountForHand(hand.resourceCards);
+  const numPlayedDevelopmentCards = getCardCountForHand(
+    hand.playedDevelopmentCards
+  );
 
   return (
     <Box
@@ -36,12 +39,13 @@ const PlayerDisplay = ({ player, thisPlayer, ...props }) => {
       <Box direction="column" align="start" gap="small">
         <Box direction="row" gap="small">
           <Text
-            size={thisPlayer ? "large" : "medium"}
-            weight={thisPlayer ? "bold" : "normal"}
+            size={isThisPlayer ? "large" : "medium"}
+            weight={isThisPlayer ? "bold" : "normal"}
+            truncate
           >
             {player.displayName}
           </Text>
-          {thisPlayer && <Fireball size="medium" color="dark-1" />}
+          {isThisPlayer && <Fireball size="medium" color="dark-1" />}
         </Box>
         <Box direction="row" gap="small">
           <HiddenResourceCard
@@ -54,6 +58,13 @@ const PlayerDisplay = ({ player, thisPlayer, ...props }) => {
             height="50px"
             count={numDevelopmentCards}
           />
+          {numPlayedDevelopmentCards > 0 && (
+            <DevelopmentCard
+              width="33px"
+              height="50px"
+              count={numPlayedDevelopmentCards}
+            />
+          )}
         </Box>
       </Box>
     </Box>

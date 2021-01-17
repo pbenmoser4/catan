@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { Box, Button, Text } from "grommet";
 
 import { startRoll, startGame } from "../../actions";
+import { PLACE_SETTLEMENT } from "../../actions/types";
 import {
   BUILD,
   BUY,
@@ -35,6 +36,9 @@ const ActionsPane = (props) => {
   actionButtons[STEAL] = actionButton(STEAL, () => console.log("steal"));
   actionButtons[TRADE] = actionButton(TRADE, () => console.log("Trade"));
   actionButtons[USE] = actionButton(USE, () => console.log("Use D Card"));
+  actionButtons[PLACE_SETTLEMENT] = actionButton(PLACE_SETTLEMENT, () =>
+    console.log("Place settlement")
+  );
 
   return (
     <Box direction="column" gap="small" align="center">
@@ -47,10 +51,9 @@ const ActionsPane = (props) => {
 const mapStateToProps = (state) => {
   // const { availableActions } = state.gameState;
 
-  const { thisPlayerId } = state.gameState;
   const thisPlayer = _.find(
     state.players.players,
-    (player) => player.id === thisPlayerId
+    (player) => player.isThisPlayer
   );
 
   const { availableActions } = thisPlayer;

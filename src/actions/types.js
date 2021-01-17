@@ -13,5 +13,6 @@ export const START_GAME = "START_GAME";
 
 export const PLACE_SETTLEMENT = "PLACE_SETTLEMENT";
 export const PLACE_CITY = "PLACE_CITY";
+export const PLACE_ROAD = "PLACE_ROAD";
 
 export const ADD_PLAYER = "ADD_PLAYER";

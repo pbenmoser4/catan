@@ -11,7 +11,6 @@ const BASE_STATE = {
     numbers: [1, 1],
     roll: 2,
   },
-  thisPlayerId: 0,
   gameOwnerId: 0,
   turn: 0,
   setupPhase: false,
@@ -36,22 +35,8 @@ const gameStateReducer = (state = BASE_STATE, action) => {
         ...state,
         dice: { rolling: true, numbers: currentNumbers, roll: currentRoll },
       };
-    case ADD_PLAYER:
-      const { id } = action.payload;
-
-      let newThisPlayerId = state.thisPlayerId;
-
-      if (state.devMode) {
-        // set the active player to the just created player
-        newThisPlayerId = id;
-      }
-
-      return {
-        ...state,
-        thisPlayerId: newThisPlayerId,
-      };
     case START_GAME:
-      console.log("let's do what we came into the room to do.");
+      return { ...state, setupPhase: 1 };
     default:
       return state;
   }

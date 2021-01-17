@@ -14,6 +14,9 @@ import {
 
 import { NODE_CLICK } from "../../../util/constants";
 
+import Settlement from "../../pieces/Settlement";
+import City from "../../pieces/City";
+
 //// TODO: implement rendering of settlements and cities
 // const renderSettlement = (node) => {
 //   return null;
@@ -63,6 +66,11 @@ const GameNode = (props) => {
         r={radius}
         fill="black"
         fillOpacity={hover ? 1.0 : 0.0}
+      />
+      <Settlement
+        containerWidth={2 * radius}
+        color="#D41C0B"
+        strokeWidth={0.2}
       />
     </svg>
   );

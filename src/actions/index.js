@@ -208,13 +208,13 @@ export const getPortsForNode = (node) => (dispatch, getState) => {
           return undefined;
         }
       case "dl":
-        if (PORT_DIRECTION === "ur") {
+        if (["ur", "uu"].includes(PORT_DIRECTION)) {
           return PORT_RESOURCE;
         } else {
           return undefined;
         }
       case "ul":
-        if (PORT_DIRECTION === "dr") {
+        if (["dr", "dd"].includes(PORT_DIRECTION)) {
           return PORT_RESOURCE;
         } else {
           return undefined;
@@ -226,13 +226,13 @@ export const getPortsForNode = (node) => (dispatch, getState) => {
           return undefined;
         }
       case "ur":
-        if (PORT_DIRECTION === "dl") {
+        if (["dl", "dd"].includes(PORT_DIRECTION)) {
           return PORT_RESOURCE;
         } else {
           return undefined;
         }
       case "dr":
-        if (PORT_DIRECTION === "ul") {
+        if (["ul", "uu"].includes(PORT_DIRECTION)) {
           return PORT_RESOURCE;
         } else {
           return undefined;
@@ -296,17 +296,18 @@ export const addPlayer = (displayName) => async (dispatch, getState) => {
 
 export const startGame = () => async (dispatch, getState) => {
   const { players } = getState().players;
-  const { thisPlayerId, gameOwnerId } = getState().gameState;
+  const { gameOwnerId } = getState().gameState;
 
   const gameOwner = _.find(players, (player) => player.id === gameOwnerId);
   const ownerName = gameOwner.displayName;
+  const thisPlayer = _.find(players, (player) => player.isThisPlayer);
 
-  if (thisPlayerId === gameOwnerId) {
+  if (thisPlayer.id === gameOwnerId) {
     dispatch({
       type: START_GAME,
       payload: null,
     });
   } else {
-    throw new Error(`Only ${ownerName} can start the gamee!`);
+    console.log(`only ${ownerName} can start the game!`);
   }
 };

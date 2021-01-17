@@ -1,5 +1,7 @@
 import { Diamond, IceCream, Launch, Trigger } from "grommet-icons";
 
+import { PLACE_SETTLEMENT } from "../actions/types";
+
 export const TILE = "TILE";
 export const NODE = "NODE";
 export const EDGE = "EDGE";
@@ -103,6 +105,7 @@ actionLabels[START] = "Start Game";
 actionLabels[STEAL] = "Steal";
 actionLabels[TRADE] = "Propose Trade";
 actionLabels[USE] = "Use Development Card";
+actionLabels[PLACE_SETTLEMENT] = "Place Settlement";
 
 export const playerColors = [
   "#D41C0B", // Red

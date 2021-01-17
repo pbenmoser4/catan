@@ -7,6 +7,8 @@ import {
 } from "../../../util/helpers";
 import { TILE_CLICK } from "../../../util/constants";
 
+import Road from "../../pieces/Road";
+
 const GameEdge = (props) => {
   const { edge, nodes, startCoords, endCoords, strokeWidth, onClick } = props;
   const [hover, setHover] = useState(false);
@@ -37,6 +39,12 @@ const GameEdge = (props) => {
         y2={y2}
         stroke="black"
         strokeWidth={strokeWidth}
+      />
+      <Road
+        startCoords={startCoords}
+        endCoords={endCoords}
+        color="white"
+        strokeWidth={1}
       />
     </g>
   );
