@@ -22,17 +22,11 @@ const BASE_STATE = {
     numbers: [1, 1],
     roll: 2,
   },
-  rollOrder: [],
   activePlayerId: 0,
   availableActions: [START],
   turn: 0,
   setupPhase: false,
   gameplayPhase: false,
-  playerScores: {},
-  setup: {
-    order: [],
-    phase: 0,
-  },
   devMode: true,
   turn: {
     action: null,
@@ -55,12 +49,6 @@ const gameStateReducer = (state = BASE_STATE, action) => {
       };
     case ADD_PLAYER:
       const { id } = action.payload;
-      const newRollOrder = state.rollOrder;
-      newRollOrder.push(id);
-      const newSetup = state.setup;
-      const newPlayerScores = state.playerScores;
-      newPlayerScores[id] = 0;
-      newSetup["order"] = newRollOrder;
 
       let newActivePlayerId = state.activePlayerId;
 
@@ -71,9 +59,6 @@ const gameStateReducer = (state = BASE_STATE, action) => {
 
       return {
         ...state,
-        rollOrder: newRollOrder,
-        setup: newSetup,
-        playerScores: newPlayerScores,
         activePlayerId: newActivePlayerId,
       };
     default:

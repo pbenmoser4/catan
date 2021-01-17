@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { v4 as uuidv4 } from "uuid";
 import { Diamond, IceCream, Launch, Trigger } from "grommet-icons";
 
 import { ADD_PLAYER } from "../actions/types";
@@ -26,14 +27,28 @@ const basePlayer = (id, displayName, icon, color) => {
         VICTORY_POINT: 0,
       },
     },
+    score: 0,
   };
+};
+
+const BASE_STATE_TESTING = {
+  players: [
+    basePlayer(uuidv4(), "Ben", availableIcons[0], playerColors[0]),
+    basePlayer(uuidv4(), "Maddie", availableIcons[1], playerColors[1]),
+    basePlayer(uuidv4(), "Benedict", availableIcons[2], playerColors[2]),
+    basePlayer(uuidv4(), "LONGNAME", availableIcons[3], playerColors[3]),
+  ],
+  rollOrder: [],
+  setupOrder: [],
 };
 
 const BASE_STATE = {
   players: [],
+  rollOrder: [],
+  setupOrder: [],
 };
 
-const playersReducer = (state = BASE_STATE, action) => {
+const playersReducer = (state = BASE_STATE_TESTING, action) => {
   switch (action.type) {
     case ADD_PLAYER:
       const { displayName, id } = action.payload;
