@@ -1,6 +1,6 @@
 import React from "react";
 
-const Road = ({ startCoords, endCoords, color, strokeWidth, ...props }) => {
+const Road = ({ startCoords, endCoords, color, strokeWidth = 1, ...props }) => {
   const roadFraction = 0.4;
   const opposite = Math.abs(endCoords.y - startCoords.y);
   const hypotenuse = Math.sqrt(

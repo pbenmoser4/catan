@@ -16,6 +16,9 @@ const Board = ({
   pad = 0,
   tilePadRatio = 0.03, // tilePadRatio is the ratio to the sidelength
   containerBox,
+  onEdgeClick,
+  onNodeClick,
+  onTileClick,
   ...props
 }) => {
   const { generateBoardState, setBoardDimensions, numCols } = props;
@@ -49,19 +52,25 @@ const Board = ({
     const { tiles, oceanTiles, nodes, edges } = board;
 
     tiles.forEach((tile, i) => {
-      boardTiles.push(<GameTile tile={tile} key={i} />);
+      boardTiles.push(<GameTile tile={tile} key={i} onClick={onTileClick} />);
     });
 
     oceanTiles.forEach((tile, i) => {
-      boardTiles.push(<GameTile tile={tile} key={i + 100} />);
+      boardTiles.push(
+        <GameTile tile={tile} key={i + 100} onClick={onTileClick} />
+      );
     });
 
     nodes.forEach((node, i) => {
-      boardNodes.push(<GameNode node={node} key={i + 200} />);
+      boardNodes.push(
+        <GameNode node={node} key={i + 200} onClick={onNodeClick} />
+      );
     });
 
     edges.forEach((edge, i) => {
-      boardEdges.push(<GameEdge edge={edge} key={i + 1000} />);
+      boardEdges.push(
+        <GameEdge edge={edge} key={i + 1000} onClick={onEdgeClick} />
+      );
     });
 
     return (

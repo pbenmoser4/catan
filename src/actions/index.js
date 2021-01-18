@@ -8,6 +8,9 @@ import {
   SET_ROLLING,
   START_GAME,
   ADD_PLAYER,
+  PLACE_SETTLEMENT,
+  PLACE_CITY,
+  PLACE_ROAD,
 } from "./types";
 import {
   ports,
@@ -30,13 +33,16 @@ import {
 } from "../util/helpers";
 
 export const generateBoardState = (numCols) => (dispatch, getState) => {
+  // This will cotain the final game state at the end of the function.
   let tiles = [];
   let nodes = [];
   let edges = [];
+
   // Take the dictionary of tile counts and turn it into a randomized array based
   // on the tile counts. Do the same for the port counts
   const randomizedTiles = generateArrayFromCountDict(tileCounts);
   const randomizedPorts = generateArrayFromCountDict(portCounts);
+
   // always one ocean column on either side of the board
   const numLandCols = numCols - 2;
   const boardMiddle = parseInt(Math.floor(numCols / 2));
@@ -48,6 +54,7 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
   };
   let desertIndex = undefined;
 
+  // generate the land tiles
   for (let i = 0; i < numLandCols; ++i) {
     // how many columns from the middle is the tile?
     let offset = Math.ceil(i / 2);
@@ -63,6 +70,7 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
     let columnEdges = [];
     let columnTiles = [];
     let dIndex = undefined;
+
     rowIndices.forEach((j, i) => {
       let tileIndex = { row: j, col: columnIndex };
       let tile = {};
@@ -93,6 +101,7 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
       desertIndex = dIndex;
     }
 
+    // Protecting against unsage references - linting issue with JSX
     nodes = _.unionBy(nodes, columnNodes, ({ row, col }) => `${row}${col}`);
     edges = _.unionBy(edges, columnEdges, ({ row, col }) => `${row}${col}`);
     tiles = _.unionBy(tiles, columnTiles, ({ row, col }) => `${row}${col}`);
@@ -310,4 +319,39 @@ export const startGame = () => async (dispatch, getState) => {
   } else {
     console.log(`only ${ownerName} can start the game!`);
   }
+};
+
+// Piece placement functions
+
+export const placeSettlement = (node) => async (dispatch, getState) => {
+  const thisPlayer = _.find(getState().players.players, (p) => p.isThisPlayer);
+  dispatch({
+    type: PLACE_SETTLEMENT,
+    payload: {
+      player: thisPlayer,
+      node: node,
+    },
+  });
+};
+
+export const placeCity = (node) => async (dispatch, getState) => {
+  const thisPlayer = _.find(getState().players.players, (p) => p.isThisPlayer);
+  dispatch({
+    type: PLACE_CITY,
+    payload: {
+      player: thisPlayer,
+      node: node,
+    },
+  });
+};
+
+export const placeRoad = (edge) => async (dispatch, getState) => {
+  const thisPlayer = _.find(getState().players.players, (p) => p.isThisPlayer);
+  dispatch({
+    type: PLACE_ROAD,
+    payload: {
+      player: thisPlayer,
+      edge: edge,
+    },
+  });
 };

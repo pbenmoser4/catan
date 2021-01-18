@@ -1,6 +1,6 @@
 import React from "react";
 
-const Settlement = ({ containerWidth, color, strokeWidth, ...props }) => {
+const Settlement = ({ containerWidth, color, strokeWidth = 0.2, ...props }) => {
   const r = containerWidth / 2;
   return (
     <polygon

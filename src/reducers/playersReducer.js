@@ -36,6 +36,7 @@ const basePlayer = (
     isActive: isActive, // maybe
     isThisPlayer: isThisPlayer,
     availableActions: [START],
+    currentAction: null,
     icon: icon,
     color: color,
     displayName: displayName,
@@ -64,6 +65,9 @@ const basePlayer = (
         VICTORY_POINT: 0,
       },
     },
+    settlements: [],
+    cities: [],
+    roads: [],
     score: 0,
   };
 };
@@ -84,9 +88,16 @@ const BASE_STATE = {
   players: [],
   rollOrder: [],
   setupOrder: [],
+  devMode: false,
 };
 
 const playersReducer = (state = BASE_STATE_TESTING, action) => {
+  let node = null;
+  let edge = null;
+  let player = null;
+  let playerIndex = null;
+  let playersCopy = null;
+
   switch (action.type) {
     case ADD_PLAYER:
       const { displayName, id } = action.payload;
@@ -124,6 +135,30 @@ const playersReducer = (state = BASE_STATE_TESTING, action) => {
       });
       const setupOrder = playersNewOrder.map((p) => p.id);
       return { ...state, players: playersNewOrder, setupOrder: setupOrder };
+    case PLACE_SETTLEMENT:
+      node = action.payload.node;
+      player = action.payload.player;
+      player.settlements.push(node);
+      playersCopy = _.cloneDeep(state.players);
+      playerIndex = _.findIndex(playersCopy, { id: player.id });
+      playersCopy[playerIndex] = player;
+      return { ...state, players: playersCopy };
+    case PLACE_CITY:
+      node = action.payload.node;
+      player = action.payload.player;
+      player.cities.push(node);
+      playersCopy = _.cloneDeep(state.players);
+      playerIndex = _.findIndex(playersCopy, { id: player.id });
+      playersCopy[playerIndex] = player;
+      return { ...state, players: playersCopy };
+    case PLACE_ROAD:
+      edge = action.payload.edge;
+      player = action.payload.player;
+      player.roads.push(node);
+      playersCopy = _.cloneDeep(state.players);
+      playerIndex = _.findIndex(playersCopy, { id: player.id });
+      playersCopy[playerIndex] = player;
+      return { ...state, players: playersCopy };
     default:
       return state;
   }

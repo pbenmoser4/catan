@@ -37,7 +37,7 @@ const PlayerDisplay = ({ player, ...props }) => {
         {player.icon}
       </Avatar>
       <Box direction="column" align="start" gap="small">
-        <Box direction="row" gap="small">
+        <Box direction="row" gap="small" align="center">
           <Text
             size={isThisPlayer ? "large" : "medium"}
             weight={isThisPlayer ? "bold" : "normal"}

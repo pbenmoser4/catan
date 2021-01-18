@@ -1,10 +1,10 @@
 import React from "react";
 
-const City = ({ containerWidth, color, ...props }) => {
+const City = ({ containerWidth, color, strokeWidth = 0.2, ...props }) => {
   const r = containerWidth / 2;
   // const strokeWidth = 0.2;
 
-  const { strokeWidth } = props;
+  // const { strokeWidth } = props;
   return (
     <polygon
       points={`${strokeWidth}, ${r / 2}
