@@ -147,6 +147,10 @@ const playersReducer = (state = BASE_STATE_TESTING, action) => {
       node = action.payload.node;
       player = action.payload.player;
       player.cities.push(node);
+      _.remove(
+        player.settlements,
+        (n) => n.row === node.row && n.col === node.col
+      );
       playersCopy = _.cloneDeep(state.players);
       playerIndex = _.findIndex(playersCopy, { id: player.id });
       playersCopy[playerIndex] = player;

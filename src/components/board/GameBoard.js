@@ -11,7 +11,7 @@ const GameBoard = ({ width, height, svgDims, background, ...props }) => {
   const { placeSettlement, placeCity, placeRoad } = props;
   // Click func tions for the board
   const onNodeClick = (node) => {
-    placeCity(node);
+    placeSettlement(node);
   };
 
   const onEdgeClick = (edge, player) => {

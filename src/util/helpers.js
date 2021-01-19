@@ -143,6 +143,18 @@ export const getTileIndicesForNodeIndex = (nodeIndex) => {
   return arr;
 };
 
+export const getAdjacentNodeIndicesForNode = (node) => {
+  const { row, col } = node;
+  const edges = getEdgeIndicesForNodeIndex(node);
+  const edgeNodes = _.flattenDeep(
+    edges.map((edge) => getNodeIndicesForEdgeIndex(edge))
+  );
+  return _.filter(
+    edgeNodes,
+    (n) => !(n.row === node.row && n.col === node.col)
+  );
+};
+
 // Get information about the board around a given edge
 
 export const getNodeIndicesForEdgeIndex = ({ row, col, direction }) => {
@@ -154,6 +166,15 @@ export const getNodeIndicesForEdgeIndex = ({ row, col, direction }) => {
     { row: nodeStartRow, col: nodeStartCol },
     { row: nodeStartRow + rowIncrement, col: nodeStartCol + colIncrement },
   ];
+};
+
+export const getConnectedEdgeIndicesForEdgeIndex = (edgeIndex) => {
+  const { row, col, direction } = edgeIndex;
+  const adjNodes = getNodeIndicesForEdgeIndex(edgeIndex);
+  const connectedEdges = _.flattenDeep(
+    adjNodes.map((n) => getEdgeIndicesForNodeIndex(n))
+  );
+  return _.filter(connectedEdges, (e) => !(e.row === row) || !(e.col === col));
 };
 
 // port nodes

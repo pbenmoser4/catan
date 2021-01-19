@@ -26,9 +26,12 @@ import {
   generateArrayFromCountDict,
   buildRowIndices,
   generatePipPlacementArray,
+  getAdjacentNodeIndicesForNode,
+  getConnectedEdgeIndicesForEdgeIndex,
   getEdgeIndicesForTileIndex,
   getNodeIndicesForTileIndex,
   getTileIndicesForNodeIndex,
+  getNodeIndicesForEdgeIndex,
   getBoardLayout,
 } from "../util/helpers";
 
@@ -323,8 +326,49 @@ export const startGame = () => async (dispatch, getState) => {
 
 // Piece placement functions
 
+const getGameStateNodesForNodeIndices = (nodeIndices, stateNodes) => {
+  return _.intersectionBy(stateNodes, nodeIndices, (n) => {
+    return `${n.row}${n.col}`;
+  });
+};
+
+const getGameStateNodeForNodeIndex = (nodeIndex, stateNodes) => {
+  const idxs = getGameStateNodesForNodeIndices([nodeIndex], stateNodes);
+  return idxs.length > 0 ? idxs[0] : null;
+};
+
+const getGameStateEdgesForEdgeIndices = (edgeIndices, stateEdges) => {
+  return _.intersectionBy(stateEdges, edgeIndices, (e) => {
+    return `${e.row}${e.col}`;
+  });
+};
+
+const getGameStateEdgeForEdgeIndex = (edgeIndex, stateEdges) => {
+  const idxs = getGameStateEdgesForEdgeIndices([edgeIndex], stateEdges);
+  return idxs.length > 0 ? idxs[0] : null;
+};
+
 export const placeSettlement = (node) => async (dispatch, getState) => {
   const thisPlayer = _.find(getState().players.players, (p) => p.isThisPlayer);
+  const { settlement, city } = node;
+  const adjNodes = getGameStateNodesForNodeIndices(
+    getAdjacentNodeIndicesForNode(node),
+    getState().board.nodes
+  );
+
+  const hasAdjacentSettlementsOrCities = !!_.find(
+    adjNodes,
+    (n) => !!n.settlement || !!n.city
+  );
+  console.log(hasAdjacentSettlementsOrCities);
+
+  if (settlement || city) {
+    console.log("You can't place a settlement where one already exists");
+    return false;
+  } else if (hasAdjacentSettlementsOrCities) {
+    console.log("You can't place a settlement adjacent to another settlement");
+    return false;
+  }
   dispatch({
     type: PLACE_SETTLEMENT,
     payload: {
@@ -336,17 +380,81 @@ export const placeSettlement = (node) => async (dispatch, getState) => {
 
 export const placeCity = (node) => async (dispatch, getState) => {
   const thisPlayer = _.find(getState().players.players, (p) => p.isThisPlayer);
-  dispatch({
-    type: PLACE_CITY,
-    payload: {
-      player: thisPlayer,
-      node: node,
-    },
-  });
+  const { city } = node;
+  if (city) {
+    console.log("You can't place a city where one already exists");
+    return false;
+  }
+
+  // You can only place a city if a settlement already exists here.
+  const { settlement } = node;
+  if (settlement) {
+    if (settlement.playerId === thisPlayer.id) {
+      dispatch({
+        type: PLACE_CITY,
+        payload: {
+          player: thisPlayer,
+          node: node,
+        },
+      });
+    } else {
+      console.log(
+        "You can only place a city on a node with a settlement of yours"
+      );
+      return false;
+    }
+  } else {
+    console.log("You can only palce a city where there's already a settlement");
+    return false;
+  }
 };
 
 export const placeRoad = (edge) => async (dispatch, getState) => {
   const thisPlayer = _.find(getState().players.players, (p) => p.isThisPlayer);
+  const { road } = edge;
+  if (road) {
+    console.log("You can't place a road where one already exists");
+    return false;
+  }
+
+  const adjEdges = getGameStateEdgesForEdgeIndices(
+    getConnectedEdgeIndicesForEdgeIndex(edge),
+    getState().board.edges
+  );
+
+  const adjNodes = getGameStateNodesForNodeIndices(
+    getNodeIndicesForEdgeIndex(edge),
+    getState().board.nodes
+  );
+
+  const thisPlayerId = thisPlayer.id;
+  const edgeNodesWithPlayerCity = _.find(adjNodes, (node) => {
+    const { settlement, city } = node;
+    if (settlement) {
+      return settlement.playerId === thisPlayerId;
+    } else if (city) {
+      return city.playerId === thisPlayerId;
+    } else {
+      return false;
+    }
+  });
+  const adjEdgesWithPlayerRoad = _.find(adjEdges, (e) => {
+    const { road } = e;
+    if (road) {
+      return road.playerId === thisPlayerId;
+    } else {
+      return false;
+    }
+  });
+  console.log(!!edgeNodesWithPlayerCity);
+  // make sure that one of the adjacent nodes has a city for this player.
+  if (!edgeNodesWithPlayerCity && !adjEdgesWithPlayerRoad) {
+    console.log(
+      "You have to have an adjacent road, settlement or city to place a road here."
+    );
+    return false;
+  }
+
   dispatch({
     type: PLACE_ROAD,
     payload: {

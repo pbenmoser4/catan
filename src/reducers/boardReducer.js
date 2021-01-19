@@ -35,6 +35,7 @@ const boardReducer = (state = BASE_STATE, action) => {
       player = action.payload.player;
       const city = { playerId: player.id, color: player.color };
       const newCityNode = { ...node, city: city };
+      delete newCityNode.settlement;
       const newNodesWithCity = _.unionBy([newCityNode], state.nodes, (node) => {
         return `${node.row}${node.col}`;
       });
