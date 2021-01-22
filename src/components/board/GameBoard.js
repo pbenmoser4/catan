@@ -3,19 +3,19 @@ import React from "react";
 import { connect } from "react-redux";
 
 import { getAppDimensionsForWindowBox } from "../../util/helpers";
-import { placeSettlement, placeCity, placeRoad } from "../../actions";
+import { handleEdgeClick, handleNodeClick } from "../../actions";
 
 import Board from "./Board";
 
 const GameBoard = ({ width, height, svgDims, background, ...props }) => {
-  const { placeSettlement, placeCity, placeRoad } = props;
+  const { handleEdgeClick, handleNodeClick } = props;
   // Click func tions for the board
   const onNodeClick = (node) => {
-    placeSettlement(node);
+    handleNodeClick(node);
   };
 
   const onEdgeClick = (edge, player) => {
-    placeRoad(edge);
+    handleEdgeClick(edge);
   };
 
   const onTileClick = (tile, player) => {
@@ -51,14 +51,10 @@ const GameBoard = ({ width, height, svgDims, background, ...props }) => {
 };
 
 const mapStateToProps = (state, ownProps) => {
-  return {
-    players: state.players.players,
-    thisPlayer: _.find(state.players.players, (p) => p.isThisPlayer),
-  };
+  return {};
 };
 
 export default connect(mapStateToProps, {
-  placeSettlement,
-  placeCity,
-  placeRoad,
+  handleEdgeClick,
+  handleNodeClick,
 })(GameBoard);

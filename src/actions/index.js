@@ -348,8 +348,7 @@ const getGameStateEdgeForEdgeIndex = (edgeIndex, stateEdges) => {
   return idxs.length > 0 ? idxs[0] : null;
 };
 
-export const placeSettlement = (node) => async (dispatch, getState) => {
-  const thisPlayer = _.find(getState().players.players, (p) => p.isThisPlayer);
+export const placeSettlement = (node, player) => async (dispatch, getState) => {
   const { settlement, city } = node;
   const adjNodes = getGameStateNodesForNodeIndices(
     getAdjacentNodeIndicesForNode(node),
@@ -372,14 +371,13 @@ export const placeSettlement = (node) => async (dispatch, getState) => {
   dispatch({
     type: PLACE_SETTLEMENT,
     payload: {
-      player: thisPlayer,
+      player: player,
       node: node,
     },
   });
 };
 
-export const placeCity = (node) => async (dispatch, getState) => {
-  const thisPlayer = _.find(getState().players.players, (p) => p.isThisPlayer);
+export const placeCity = (node, player) => async (dispatch, getState) => {
   const { city } = node;
   if (city) {
     console.log("You can't place a city where one already exists");
@@ -389,11 +387,11 @@ export const placeCity = (node) => async (dispatch, getState) => {
   // You can only place a city if a settlement already exists here.
   const { settlement } = node;
   if (settlement) {
-    if (settlement.playerId === thisPlayer.id) {
+    if (settlement.playerId === player.id) {
       dispatch({
         type: PLACE_CITY,
         payload: {
-          player: thisPlayer,
+          player: player,
           node: node,
         },
       });
@@ -409,8 +407,7 @@ export const placeCity = (node) => async (dispatch, getState) => {
   }
 };
 
-export const placeRoad = (edge) => async (dispatch, getState) => {
-  const thisPlayer = _.find(getState().players.players, (p) => p.isThisPlayer);
+export const placeRoad = (edge, player) => async (dispatch, getState) => {
   const { road } = edge;
   if (road) {
     console.log("You can't place a road where one already exists");
@@ -427,13 +424,13 @@ export const placeRoad = (edge) => async (dispatch, getState) => {
     getState().board.nodes
   );
 
-  const thisPlayerId = thisPlayer.id;
+  const playerId = player.id;
   const edgeNodesWithPlayerCity = _.find(adjNodes, (node) => {
     const { settlement, city } = node;
     if (settlement) {
-      return settlement.playerId === thisPlayerId;
+      return settlement.playerId === playerId;
     } else if (city) {
-      return city.playerId === thisPlayerId;
+      return city.playerId === playerId;
     } else {
       return false;
     }
@@ -441,12 +438,12 @@ export const placeRoad = (edge) => async (dispatch, getState) => {
   const adjEdgesWithPlayerRoad = _.find(adjEdges, (e) => {
     const { road } = e;
     if (road) {
-      return road.playerId === thisPlayerId;
+      return road.playerId === playerId;
     } else {
       return false;
     }
   });
-  console.log(!!edgeNodesWithPlayerCity);
+
   // make sure that one of the adjacent nodes has a city for this player.
   if (!edgeNodesWithPlayerCity && !adjEdgesWithPlayerRoad) {
     console.log(
@@ -458,8 +455,56 @@ export const placeRoad = (edge) => async (dispatch, getState) => {
   dispatch({
     type: PLACE_ROAD,
     payload: {
-      player: thisPlayer,
+      player: player,
       edge: edge,
     },
   });
+};
+
+// click node action handler
+
+export const handleNodeClick = (node) => (dispatch, getState) => {
+  const thisPlayer = _.find(getState().players.players, (p) => p.isThisPlayer);
+  const { isActive } = thisPlayer;
+  const { availableActions } = thisPlayer;
+  const { settlement, city } = node;
+
+  // It's this player's turn
+  if (isActive) {
+    // PLACE_SETTLEMENT
+    if (availableActions.includes(PLACE_SETTLEMENT)) {
+      placeSettlement(node, thisPlayer);
+    }
+    // PLACE_CITY
+    if (availableActions.includes(PLACE_CITY)) {
+      placeCity(node, thisPlayer);
+    } else {
+      console.log("Nothing to do!");
+      console.log(node);
+    }
+  } else {
+    console.log("You ain't active, honey");
+    console.log(node);
+  }
+};
+
+export const handleEdgeClick = (edge) => (dispatch, getState) => {
+  const thisPlayer = _.find(getState().players.players, (p) => p.isThisPlayer);
+  const { isActive } = thisPlayer;
+  const { availableActions } = thisPlayer;
+  const { road } = edge;
+
+  // It's this player's turn
+  if (isActive) {
+    // PLACE_ROAD
+    if (availableActions.includes(PLACE_ROAD)) {
+      placeRoad(edge, thisPlayer);
+    } else {
+      console.log("Nothing to do!");
+      console.log(edge);
+    }
+  } else {
+    console.log("You ain't active, honey");
+    console.log(edge);
+  }
 };
