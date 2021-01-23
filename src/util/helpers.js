@@ -1,14 +1,6 @@
 import _ from "lodash";
 
-import {
-  pips,
-  ports,
-  EDGE,
-  NODE,
-  TILE,
-  PORT_RESOURCE,
-  PORT_DIRECTION,
-} from "./constants";
+import { pips, NODE, TILE } from "./constants";
 
 export const generateArrayFromCountDict = (countDict, randomize = true) => {
   let arr = [];
@@ -144,7 +136,6 @@ export const getTileIndicesForNodeIndex = (nodeIndex) => {
 };
 
 export const getAdjacentNodeIndicesForNode = (node) => {
-  const { row, col } = node;
   const edges = getEdgeIndicesForNodeIndex(node);
   const edgeNodes = _.flattenDeep(
     edges.map((edge) => getNodeIndicesForEdgeIndex(edge))
@@ -169,7 +160,7 @@ export const getNodeIndicesForEdgeIndex = ({ row, col, direction }) => {
 };
 
 export const getConnectedEdgeIndicesForEdgeIndex = (edgeIndex) => {
-  const { row, col, direction } = edgeIndex;
+  const { row, col } = edgeIndex;
   const adjNodes = getNodeIndicesForEdgeIndex(edgeIndex);
   const connectedEdges = _.flattenDeep(
     adjNodes.map((n) => getEdgeIndicesForNodeIndex(n))
@@ -192,15 +183,15 @@ export const indexFromLookupString = (str) => {
   return { row: parseInt(vals[0]), col: parseInt(vals[1]) };
 };
 
-const getBoardHWRatio = (numCols, tilePadRatio) => {
-  return (
-    (2 * (numCols * Math.sqrt(3) + numCols * tilePadRatio - tilePadRatio)) /
-    (3 * numCols +
-      Math.sqrt(3) * tilePadRatio * numCols -
-      Math.sqrt(3) * tilePadRatio +
-      1)
-  );
-};
+// const getBoardHWRatio = (numCols, tilePadRatio) => {
+//   return (
+//     (2 * (numCols * Math.sqrt(3) + numCols * tilePadRatio - tilePadRatio)) /
+//     (3 * numCols +
+//       Math.sqrt(3) * tilePadRatio * numCols -
+//       Math.sqrt(3) * tilePadRatio +
+//       1)
+//   );
+// };
 
 const generateTileXCoordinateArray = (
   minX,

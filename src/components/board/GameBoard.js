@@ -1,4 +1,3 @@
-import _ from "lodash";
 import React from "react";
 import { connect } from "react-redux";
 
@@ -23,7 +22,6 @@ const GameBoard = ({ width, height, svgDims, background, ...props }) => {
   };
 
   const viewBoxString = svgDims.map((_) => String(_)).join(" ");
-  let dims = getAppDimensionsForWindowBox(width, height);
   let boardPad = 1;
   return (
     <svg viewBox={viewBoxString} width={width} height={height}>

@@ -1,18 +1,12 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 
-import {
-  getCenterForIndex,
-  getEdgeIndicesForNodeIndex,
-  getTileIndicesForNodeIndex,
-} from "../../../util/helpers";
+import { getCenterForIndex } from "../../../util/helpers";
 import {
   getTilesForNode,
   getResourceTilesForNode,
   getPortsForNode,
 } from "../../../actions";
-
-import { NODE_CLICK } from "../../../util/constants";
 
 import Settlement from "../../pieces/Settlement";
 import City from "../../pieces/City";
@@ -38,15 +32,7 @@ const renderCity = (node, containerWidth) => {
 };
 
 const GameNode = (props) => {
-  const {
-    node,
-    center,
-    radius,
-    onClick,
-    getTilesForNode,
-    getResourceTilesForNode,
-    getPortsForNode,
-  } = props;
+  const { node, center, radius, onClick } = props;
   const [hover, setHover] = useState(false);
   return (
     <svg

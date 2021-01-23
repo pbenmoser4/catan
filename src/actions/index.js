@@ -3,8 +3,6 @@ import { v4 as uuidv4 } from "uuid";
 
 import {
   ADD_PLAYER,
-  CANCEL_PLACE_ROAD_ACTION,
-  CANCEL_PLACE_SETTLEMENT_ACTION,
   END_TURN,
   PLACE_CITY,
   PLACE_ROAD,
@@ -20,7 +18,6 @@ import {
   START_GAMEPLAY_PHASE,
   START_PLACE_CITY_ACTION,
   START_PLACE_SETTLEMENT_ACTION,
-  START_SETUP_PHASE_1,
   START_SETUP_PHASE_2,
   UPDATE_PLAYER,
   UPDATE_PLAYERS,
@@ -348,10 +345,10 @@ const getGameStateNodesForNodeIndices = (nodeIndices, stateNodes) => {
   });
 };
 
-const getGameStateNodeForNodeIndex = (nodeIndex, stateNodes) => {
-  const idxs = getGameStateNodesForNodeIndices([nodeIndex], stateNodes);
-  return idxs.length > 0 ? idxs[0] : null;
-};
+// const getGameStateNodeForNodeIndex = (nodeIndex, stateNodes) => {
+//   const idxs = getGameStateNodesForNodeIndices([nodeIndex], stateNodes);
+//   return idxs.length > 0 ? idxs[0] : null;
+// };
 
 const getGameStateEdgesForEdgeIndices = (edgeIndices, stateEdges) => {
   return _.intersectionBy(stateEdges, edgeIndices, (e) => {
@@ -359,10 +356,10 @@ const getGameStateEdgesForEdgeIndices = (edgeIndices, stateEdges) => {
   });
 };
 
-const getGameStateEdgeForEdgeIndex = (edgeIndex, stateEdges) => {
-  const idxs = getGameStateEdgesForEdgeIndices([edgeIndex], stateEdges);
-  return idxs.length > 0 ? idxs[0] : null;
-};
+// const getGameStateEdgeForEdgeIndex = (edgeIndex, stateEdges) => {
+//   const idxs = getGameStateEdgesForEdgeIndices([edgeIndex], stateEdges);
+//   return idxs.length > 0 ? idxs[0] : null;
+// };
 
 const getGameStateTilesForNodeIndex = (nodeIndex, stateTiles) => {
   const idxs = getTileIndicesForNodeIndex(nodeIndex);
@@ -678,16 +675,10 @@ export const placeRoad = (edge, player) => async (dispatch, getState) => {
 export const handleNodeClick = (node) => (dispatch, getState) => {
   const thisPlayer = _.find(getState().players.players, (p) => p.isThisPlayer);
   const { isActive } = thisPlayer;
-  const { availableActions, currentAction } = thisPlayer;
-  const { settlement, city } = node;
+  const { currentAction } = thisPlayer;
 
   // const gameState = getState().gameState;
   const { setupPhase, gameplayPhase } = getState().gameState;
-  const currentPhase = !!setupPhase
-    ? setupPhase
-    : !!gameplayPhase
-    ? gameplayPhase
-    : null;
 
   // It's this player's turn
   if (isActive) {
@@ -711,16 +702,8 @@ export const handleNodeClick = (node) => (dispatch, getState) => {
 export const handleEdgeClick = (edge) => (dispatch, getState) => {
   const thisPlayer = _.find(getState().players.players, (p) => p.isThisPlayer);
   const { isActive } = thisPlayer;
-  const { availableActions, currentAction } = thisPlayer;
-  const { road } = edge;
-
-  const gameState = getState().gameState;
+  const { currentAction } = thisPlayer;
   const { setupPhase, gameplayPhase } = getState().gameState;
-  const currentPhase = !!setupPhase
-    ? setupPhase
-    : !!gameplayPhase
-    ? gameplayPhase
-    : null;
 
   // It's this player's turn
   if (isActive) {

@@ -17,7 +17,6 @@ import {
   END,
   PLACE,
   ROLL,
-  START,
   STEAL,
   TRADE,
   USE,
@@ -35,7 +34,6 @@ const ActionsPane = (props) => {
     startRoll,
     startGame,
     availableActions,
-    currentAction,
     thisPlayer,
     startPlaceRoadAction,
     startPlaceSettlementAction,
@@ -93,7 +91,6 @@ const mapStateToProps = (state) => {
   return {
     thisPlayer: thisPlayer,
     availableActions: availableActions,
-    currentAction: currentAction,
   };
 };
 

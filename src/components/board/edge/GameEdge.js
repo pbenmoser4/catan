@@ -5,7 +5,6 @@ import {
   getNodeIndicesForEdgeIndex,
   getCenterForIndex,
 } from "../../../util/helpers";
-import { TILE_CLICK } from "../../../util/constants";
 
 import Road from "../../pieces/Road";
 
@@ -25,7 +24,7 @@ const renderRoad = (edge, startCoords, endCoords) => {
 };
 
 const GameEdge = (props) => {
-  const { edge, nodes, startCoords, endCoords, strokeWidth, onClick } = props;
+  const { edge, startCoords, endCoords, strokeWidth, onClick } = props;
   const [hover, setHover] = useState(false);
   const x1 = `${startCoords.x}`;
   const y1 = `${startCoords.y}`;
@@ -68,7 +67,6 @@ const mapStateToProps = (state, ownProps) => {
   let endCoords = getCenterForIndex(endNode, state.dimensions.coords.NODE);
 
   return {
-    nodes: getNodeIndicesForEdgeIndex(ownProps.edge),
     startCoords: startCoords,
     endCoords: endCoords,
     strokeWidth: state.dimensions.tilePad,

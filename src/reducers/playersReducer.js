@@ -17,21 +17,7 @@ import {
   UPDATE_PLAYERS,
 } from "../actions/types";
 
-import {
-  ROLL,
-  BUILD,
-  BUY,
-  TRADE,
-  USE,
-  STEAL,
-  START,
-  PLACE,
-  availableIcons,
-  playerColors,
-  SETUP_PHASE_1,
-  SETUP_PHASE_2,
-  GAMEPLAY_PHASE,
-} from "../util/constants";
+import { availableIcons, playerColors } from "../util/constants";
 
 const basePlayer = (
   id,
@@ -111,13 +97,9 @@ const BASE_STATE = {
 const playersReducer = (state = BASE_STATE_TESTING, action) => {
   let node = null;
   let edge = null;
-  let gamePhase = null;
   let player = null;
   let playerIndex = null;
   let playersCopy = null;
-  let nextPlayer = null;
-  let nextPlayerIndex = null;
-  let newTurn = state.turn;
 
   switch (action.type) {
     case ADD_PLAYER:
@@ -204,7 +186,6 @@ const playersReducer = (state = BASE_STATE_TESTING, action) => {
       playersCopy[playerIndex] = player;
       return { ...state, players: playersCopy };
     case PLACE_ROAD:
-      let playersGameplayOrder = null;
       edge = action.payload.edge;
       player = action.payload.player;
       player.roads.push(edge);

@@ -1,13 +1,10 @@
-import _ from "lodash";
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 
 import { generateBoardState, setBoardDimensions } from "../../actions";
-import { buildRowIndices } from "../../util/helpers";
 
 import { Group } from "@visx/group";
 
-import Hexagon from "./tile/Hexagon";
 import GameTile from "./tile/GameTile";
 import GameNode from "./node/GameNode";
 import GameEdge from "./edge/GameEdge";
@@ -34,11 +31,11 @@ const Board = ({
     containerBox,
     tilePadRatio,
     pad,
+    board,
   ]);
 
   let { board, dimensions } = props;
 
-  let middle = parseInt(Math.floor(numCols / 2));
   let boardTiles = [];
   let boardNodes = [];
   let boardEdges = [];
