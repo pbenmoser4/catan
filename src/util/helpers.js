@@ -438,11 +438,17 @@ export const getAppDimensionsForWindowBox = (width, height) => {
 // hand methods
 
 export const getCardCountForHand = (hand) => {
-  return _.reduce(
-    hand,
-    (result, value, key) => {
-      return (result += value);
-    },
-    0
-  );
+  let num = 0;
+  Object.keys(hand).forEach((k, i) => {
+    num += hand[k];
+  });
+  return num;
+
+  // return _.reduce(
+  //   hand,
+  //   (result, value, key) => {
+  //     return (result += value);
+  //   },
+  //   0
+  // );
 };

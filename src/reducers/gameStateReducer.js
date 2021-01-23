@@ -43,7 +43,7 @@ const gameStateReducer = (state = BASE_STATE, action) => {
     case START_GAME:
       return { ...state, setupPhase: SETUP_PHASE_1 };
     case START_GAMEPLAY_PHASE:
-      return { ...state, setupPhase: false, gameplayPhase: true };
+      return { ...state, setupPhase: false, gameplayPhase: GAMEPLAY_PHASE };
     case START_SETUP_PHASE_1:
       return { ...state, setupPhase: SETUP_PHASE_1 };
     case START_SETUP_PHASE_2:

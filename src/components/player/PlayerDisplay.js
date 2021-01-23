@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 
 import { Avatar, Box, Text } from "grommet";
 import { Fireball } from "grommet-icons";
@@ -13,7 +12,7 @@ import DevelopmentCard from "../cards/DevelopmentCard";
 const PlayerDisplay = ({ player, ...props }) => {
   const { hand, isActive, isThisPlayer } = player;
   const numDevelopmentCards = getCardCountForHand(hand.developmentCards);
-  const numResourceCards = getCardCountForHand(hand.resourceCards);
+  const numResourceCards = getCardCountForHand(hand.resources);
   const numPlayedDevelopmentCards = getCardCountForHand(
     hand.playedDevelopmentCards
   );
