@@ -1,6 +1,10 @@
 import { Diamond, IceCream, Launch, Trigger } from "grommet-icons";
 
-import { PLACE_SETTLEMENT } from "../actions/types";
+import { PLACE_ROAD, PLACE_SETTLEMENT, START_GAME } from "../actions/types";
+
+export const GAMEPLAY_PHASE = "GAMEPLAY_PHASE";
+export const SETUP_PHASE_1 = "SETUP_PHASE_1";
+export const SETUP_PHASE_2 = "SETUP_PHASE_2";
 
 export const TILE = "TILE";
 export const NODE = "NODE";
@@ -96,16 +100,26 @@ export const TRADE = "TRADE";
 export const USE = "USE";
 
 export const actionLabels = {};
-actionLabels[BUILD] = "Build";
-actionLabels[BUY] = "Buy";
-actionLabels[END] = "End Turn";
-actionLabels[PLACE] = "Place Item";
-actionLabels[ROLL] = "Roll";
-actionLabels[START] = "Start Game";
-actionLabels[STEAL] = "Steal";
-actionLabels[TRADE] = "Propose Trade";
-actionLabels[USE] = "Use Development Card";
-actionLabels[PLACE_SETTLEMENT] = "Place Settlement";
+actionLabels[BUILD] = { enabled: "Build", disabled: "Cancel Build" };
+actionLabels[BUY] = { enabled: "Buy", disabled: "Cancel Buy" };
+actionLabels[END] = { enabled: "End Turn" };
+actionLabels[PLACE] = { enabled: "Place Item", disabled: "Cancel Place" };
+actionLabels[ROLL] = { enabled: "Roll", disabled: "Rolling" };
+actionLabels[START_GAME] = {
+  enabled: "Start Game",
+  disabled: "Starting Game...",
+};
+actionLabels[STEAL] = { enabled: "Steal", disabled: "Cancel Steal" };
+actionLabels[TRADE] = { enabled: "Trade", disabled: "Cancel Trade" };
+actionLabels[USE] = { enabled: "Use Development Card", disabled: "Cancel Use" };
+actionLabels[PLACE_ROAD] = {
+  enabled: "Place Road",
+  disabled: "Cancel Place",
+};
+actionLabels[PLACE_SETTLEMENT] = {
+  enabled: "Place Settlement",
+  disabled: "Cancel Place",
+};
 
 export const playerColors = [
   "#D41C0B", // Red

@@ -1,13 +1,20 @@
 import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
-import { Diamond, IceCream, Launch, Trigger } from "grommet-icons";
 
 import {
   ADD_PLAYER,
+  END_TURN,
   START_GAME,
+  START_GAMEPLAY_PHASE,
+  START_PLACE_CITY_ACTION,
+  START_PLACE_ROAD_ACTION,
+  START_PLACE_SETTLEMENT_ACTION,
   PLACE_SETTLEMENT,
   PLACE_CITY,
   PLACE_ROAD,
+  SET_ROLL_ORDER,
+  UPDATE_PLAYER,
+  UPDATE_PLAYERS,
 } from "../actions/types";
 
 import {
@@ -21,6 +28,9 @@ import {
   PLACE,
   availableIcons,
   playerColors,
+  SETUP_PHASE_1,
+  SETUP_PHASE_2,
+  GAMEPLAY_PHASE,
 } from "../util/constants";
 
 const basePlayer = (
@@ -29,13 +39,14 @@ const basePlayer = (
   icon,
   color,
   isActive = false,
-  isThisPlayer = false
+  isThisPlayer = false,
+  availableActions = []
 ) => {
   return {
     id: id,
     isActive: isActive, // maybe
     isThisPlayer: isThisPlayer,
-    availableActions: [START],
+    availableActions: availableActions,
     currentAction: null,
     icon: icon,
     color: color,
@@ -74,7 +85,9 @@ const basePlayer = (
 
 const BASE_STATE_TESTING = {
   players: [
-    basePlayer(0, "Ben", availableIcons[0], playerColors[0], true, true),
+    basePlayer(0, "Ben", availableIcons[0], playerColors[0], true, true, [
+      START_GAME,
+    ]),
     basePlayer(uuidv4(), "Maddie", availableIcons[1], playerColors[1]),
     basePlayer(uuidv4(), "Benedict", availableIcons[2], playerColors[2]),
     basePlayer(uuidv4(), "Alison", availableIcons[3], playerColors[3]),
@@ -82,6 +95,8 @@ const BASE_STATE_TESTING = {
   rollOrder: [],
   setupOrder: [],
   devMode: true,
+  gameOwnerId: 0,
+  turn: 0,
 };
 
 const BASE_STATE = {
@@ -89,14 +104,20 @@ const BASE_STATE = {
   rollOrder: [],
   setupOrder: [],
   devMode: false,
+  gameOwnerId: 0,
+  turn: 0,
 };
 
 const playersReducer = (state = BASE_STATE_TESTING, action) => {
   let node = null;
   let edge = null;
+  let gamePhase = null;
   let player = null;
   let playerIndex = null;
   let playersCopy = null;
+  let nextPlayer = null;
+  let nextPlayerIndex = null;
+  let newTurn = state.turn;
 
   switch (action.type) {
     case ADD_PLAYER:
@@ -134,11 +155,31 @@ const playersReducer = (state = BASE_STATE_TESTING, action) => {
         return p;
       });
       const setupOrder = playersNewOrder.map((p) => p.id);
-      return { ...state, players: playersNewOrder, setupOrder: setupOrder };
+      return {
+        ...state,
+        players: playersNewOrder,
+        setupOrder: setupOrder,
+      };
+    case SET_ROLL_ORDER:
+      return { ...state, rollOrder: action.payload };
+    case START_PLACE_SETTLEMENT_ACTION:
+      player = action.payload;
+      player["currentAction"] = PLACE_SETTLEMENT;
+      playersCopy = _.cloneDeep(state.players);
+      playerIndex = _.findIndex(playersCopy, { id: player.id });
+      playersCopy[playerIndex] = player;
+      return { ...state, players: playersCopy };
     case PLACE_SETTLEMENT:
       node = action.payload.node;
       player = action.payload.player;
       player.settlements.push(node);
+      playersCopy = _.cloneDeep(state.players);
+      playerIndex = _.findIndex(playersCopy, { id: player.id });
+      playersCopy[playerIndex] = player;
+      return { ...state, players: playersCopy };
+    case START_PLACE_CITY_ACTION:
+      player = action.payload;
+      player["currentAction"] = PLACE_CITY;
       playersCopy = _.cloneDeep(state.players);
       playerIndex = _.findIndex(playersCopy, { id: player.id });
       playersCopy[playerIndex] = player;
@@ -155,14 +196,30 @@ const playersReducer = (state = BASE_STATE_TESTING, action) => {
       playerIndex = _.findIndex(playersCopy, { id: player.id });
       playersCopy[playerIndex] = player;
       return { ...state, players: playersCopy };
-    case PLACE_ROAD:
-      edge = action.payload.edge;
-      player = action.payload.player;
-      player.roads.push(node);
+    case START_PLACE_ROAD_ACTION:
+      player = action.payload;
+      player["currentAction"] = PLACE_ROAD;
       playersCopy = _.cloneDeep(state.players);
       playerIndex = _.findIndex(playersCopy, { id: player.id });
       playersCopy[playerIndex] = player;
       return { ...state, players: playersCopy };
+    case PLACE_ROAD:
+      let playersGameplayOrder = null;
+      edge = action.payload.edge;
+      player = action.payload.player;
+      player.roads.push(edge);
+      playersCopy = _.cloneDeep(state.players);
+      playerIndex = _.findIndex(playersCopy, { id: player.id });
+      playersCopy[playerIndex] = player;
+      return { ...state, players: playersCopy };
+    case UPDATE_PLAYER:
+      playerIndex = action.payload.playerIndex;
+      player = action.payload.player;
+      playersCopy = _.cloneDeep(state.players);
+      playersCopy[playerIndex] = player;
+      return { ...state, players: playersCopy };
+    case UPDATE_PLAYERS:
+      return { ...state, players: action.payload };
     default:
       return state;
   }

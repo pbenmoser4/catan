@@ -3,12 +3,21 @@ import { connect } from "react-redux";
 
 import { Box, Text } from "grommet";
 
+import {
+  SETUP_PHASE_1,
+  SETUP_PHASE_2,
+  GAMEPLAY_PHASE,
+} from "../../util/constants";
+
 import Players from "../player/Players";
 
 const generateGameStateText = (setupPhase, gameplayPhase, turn) => {
-  if (setupPhase) {
-    return `Setup Phase ${setupPhase}`;
-  } else if (gameplayPhase) {
+  console.log(setupPhase);
+  if (setupPhase === SETUP_PHASE_1) {
+    return "Setup Phase 1";
+  } else if (setupPhase === SETUP_PHASE_2) {
+    return "Setup Phase 2";
+  } else if (gameplayPhase === GAMEPLAY_PHASE) {
     return `Turn ${turn}`;
   } else {
     return "Waiting...";
@@ -30,9 +39,9 @@ const GameStatePane = ({ width, pad, ...props }) => {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    setupPhase: state.gameState.setupPhase,
-    gameplayPhase: state.gameState.gameplayPhase,
-    turn: state.gameState.turn,
+    setupPhase: state.players.setupPhase,
+    gameplayPhase: state.players.gameplayPhase,
+    turn: state.players.turn,
     players: state.players.players,
   };
 };

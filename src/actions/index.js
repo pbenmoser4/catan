@@ -2,15 +2,28 @@ import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
 import {
+  ADD_PLAYER,
+  CANCEL_PLACE_ROAD_ACTION,
+  CANCEL_PLACE_SETTLEMENT_ACTION,
+  END_TURN,
+  PLACE_CITY,
+  PLACE_ROAD,
+  PLACE_SETTLEMENT,
+  ROLL,
   SET_BOARD_STATE,
   SET_BOARD_DIMENSIONS,
+  SET_ROLL_ORDER,
+  START_PLACE_ROAD_ACTION,
   SET_ROLL,
   SET_ROLLING,
   START_GAME,
-  ADD_PLAYER,
-  PLACE_SETTLEMENT,
-  PLACE_CITY,
-  PLACE_ROAD,
+  START_GAMEPLAY_PHASE,
+  START_PLACE_CITY_ACTION,
+  START_PLACE_SETTLEMENT_ACTION,
+  START_SETUP_PHASE_1,
+  START_SETUP_PHASE_2,
+  UPDATE_PLAYER,
+  UPDATE_PLAYERS,
 } from "./types";
 import {
   ports,
@@ -21,6 +34,9 @@ import {
   WATER,
   PORT_RESOURCE,
   PORT_DIRECTION,
+  SETUP_PHASE_1,
+  SETUP_PHASE_2,
+  GAMEPLAY_PHASE,
 } from "../util/constants";
 import {
   generateArrayFromCountDict,
@@ -348,18 +364,37 @@ const getGameStateEdgeForEdgeIndex = (edgeIndex, stateEdges) => {
   return idxs.length > 0 ? idxs[0] : null;
 };
 
+const getGameStateTilesForNodeIndex = (nodeIndex, stateTiles) => {
+  const idxs = getTileIndicesForNodeIndex(nodeIndex);
+  return _.intersectionBy(stateTiles, idxs, (t) => `${t.row}${t.col}`);
+};
+
+// Placing Settlements
+
+export const startPlaceSettlementAction = (player) => async (
+  dispatch,
+  getState
+) => {
+  dispatch({
+    type: START_PLACE_SETTLEMENT_ACTION,
+    payload: player,
+  });
+};
+
 export const placeSettlement = (node, player) => async (dispatch, getState) => {
   const { settlement, city } = node;
+  const { players } = getState().players;
+  const { setupPhase, gameplayPhase } = getState().gameState;
   const adjNodes = getGameStateNodesForNodeIndices(
     getAdjacentNodeIndicesForNode(node),
     getState().board.nodes
   );
+  const adjTiles = getGameStateTilesForNodeIndex(node, getState().board.tiles);
 
   const hasAdjacentSettlementsOrCities = !!_.find(
     adjNodes,
     (n) => !!n.settlement || !!n.city
   );
-  console.log(hasAdjacentSettlementsOrCities);
 
   if (settlement || city) {
     console.log("You can't place a settlement where one already exists");
@@ -367,13 +402,54 @@ export const placeSettlement = (node, player) => async (dispatch, getState) => {
   } else if (hasAdjacentSettlementsOrCities) {
     console.log("You can't place a settlement adjacent to another settlement");
     return false;
+  } else {
+    // there's no settlement or city, and there's no adjacent settlement or city
+    dispatch({
+      type: PLACE_SETTLEMENT,
+      payload: {
+        player: player,
+        node: node,
+      },
+    });
+
+    let playerIndex = _.findIndex(players, { id: player.id });
+    let newPlayer = _.cloneDeep(player);
+    newPlayer.currentAction = null;
+    // post-placement updates
+    if (setupPhase) {
+      // we're currently in the setup phase
+      newPlayer.availableActions = [PLACE_ROAD];
+      if (setupPhase === SETUP_PHASE_2) {
+        // give player a resource card for each adjacent node
+        let newHand = newPlayer.hand;
+        adjTiles.forEach((tile, i) => {
+          if (tile.RESOURCE !== DESERT) {
+            newHand.resources[tile.RESOURCE] += 1;
+          }
+        });
+        newPlayer.hand = newHand;
+      }
+    } else if (gameplayPhase) {
+      // we're in gameplay phase
+      newPlayer.availableActions = [END_TURN];
+    }
+
+    console.log(newPlayer);
+
+    dispatch({
+      type: UPDATE_PLAYER,
+      payload: {
+        playerIndex: playerIndex,
+        player: newPlayer,
+      },
+    });
   }
+};
+
+export const startPlaceCityAction = (player) => async (dispatch, getState) => {
   dispatch({
-    type: PLACE_SETTLEMENT,
-    payload: {
-      player: player,
-      node: node,
-    },
+    type: START_PLACE_CITY_ACTION,
+    payload: player,
   });
 };
 
@@ -407,8 +483,18 @@ export const placeCity = (node, player) => async (dispatch, getState) => {
   }
 };
 
+export const startPlaceRoadAction = (player) => async (dispatch, getState) => {
+  dispatch({
+    type: START_PLACE_ROAD_ACTION,
+    payload: player,
+  });
+};
+
 export const placeRoad = (edge, player) => async (dispatch, getState) => {
   const { road } = edge;
+  const { players } = getState().players;
+  const { setupPhase, gameplayPhase, devMode } = getState().gameState;
+
   if (road) {
     console.log("You can't place a road where one already exists");
     return false;
@@ -424,21 +510,21 @@ export const placeRoad = (edge, player) => async (dispatch, getState) => {
     getState().board.nodes
   );
 
-  const playerId = player.id;
   const edgeNodesWithPlayerCity = _.find(adjNodes, (node) => {
     const { settlement, city } = node;
     if (settlement) {
-      return settlement.playerId === playerId;
+      return settlement.playerId === player.id;
     } else if (city) {
-      return city.playerId === playerId;
+      return city.playerId === player.id;
     } else {
       return false;
     }
   });
+
   const adjEdgesWithPlayerRoad = _.find(adjEdges, (e) => {
     const { road } = e;
     if (road) {
-      return road.playerId === playerId;
+      return road.playerId === player.id;
     } else {
       return false;
     }
@@ -450,15 +536,141 @@ export const placeRoad = (edge, player) => async (dispatch, getState) => {
       "You have to have an adjacent road, settlement or city to place a road here."
     );
     return false;
-  }
+  } else {
+    // placement is possible
+    let playerIndex = _.findIndex(players, { id: player.id });
+    let playerClone = _.cloneDeep(player);
+    playerClone.currentAction = null;
+    dispatch({
+      type: PLACE_ROAD,
+      payload: {
+        player: player,
+        edge: edge,
+      },
+    });
 
-  dispatch({
-    type: PLACE_ROAD,
-    payload: {
-      player: player,
-      edge: edge,
-    },
-  });
+    if (setupPhase) {
+      // how do we handle road placement in setupPhase?
+      // place the road, then set a new active player
+      // If it's the end of a setup phase, start the next phaase
+      // if it's the end of the setup phase, start the gameplay phase and shuffle
+      // the player array.
+      let nextPlayerIndex = null;
+      let nextPlayer = null;
+
+      if (setupPhase === SETUP_PHASE_1) {
+        if (playerIndex === players.length - 1) {
+          // we've reached the end of the first setup round
+          // we need to keep the same player active, and set their available
+          //    actions to PLACE_SETTLEMENT
+          // we need to set setup phase to SETUP_PHASE_2
+          playerClone.availableActions = [PLACE_SETTLEMENT];
+
+          dispatch({
+            type: UPDATE_PLAYER,
+            payload: {
+              playerIndex: playerIndex,
+              player: playerClone,
+            },
+          });
+          dispatch({
+            type: START_SETUP_PHASE_2,
+            payload: null,
+          });
+        } else {
+          // still more to do in setup phase 1
+          // place the road
+          // set the next player to the currently active player
+          // update current player and next player with this new information
+          // if we're in dev mode, set isThisPlayer for the next player to true
+
+          playerClone.availableActions = [];
+          playerClone.isActive = false;
+          playerClone.isThisPlayer = devMode ? false : playerClone.isThisPlayer;
+          nextPlayerIndex = playerIndex + 1;
+          nextPlayer = _.cloneDeep(players[nextPlayerIndex]);
+          nextPlayer.availableActions = [PLACE_SETTLEMENT];
+          nextPlayer.isActive = true;
+          nextPlayer.isThisPlayer = devMode ? true : nextPlayer.isThisPlayer;
+
+          dispatch({
+            type: UPDATE_PLAYER,
+            payload: {
+              playerIndex: playerIndex,
+              player: playerClone,
+            },
+          });
+          dispatch({
+            type: UPDATE_PLAYER,
+            payload: {
+              playerIndex: nextPlayerIndex,
+              player: nextPlayer,
+            },
+          });
+        }
+      } else if (setupPhase === SETUP_PHASE_2) {
+        // setup phase 2
+
+        if (playerIndex === 0) {
+          // we've reached the end of setup phase 2!
+          let newPlayerOrder = _.shuffle(_.cloneDeep(players));
+          newPlayerOrder = newPlayerOrder.map((p, i) => {
+            p.availableActions = i === 0 ? [ROLL] : [];
+            p.currentAction = null;
+            p.isActive = i === 0 ? true : false;
+            p.isThisPlayer = devMode
+              ? i === 0
+                ? true
+                : false
+              : p.isThisPlayer;
+            return p;
+          });
+          const rollOrder = newPlayerOrder.map((p) => p.id);
+
+          dispatch({
+            type: UPDATE_PLAYERS,
+            payload: newPlayerOrder,
+          });
+
+          dispatch({
+            type: SET_ROLL_ORDER,
+            payload: rollOrder,
+          });
+
+          dispatch({
+            type: START_GAMEPLAY_PHASE,
+            payload: null,
+          });
+        } else {
+          playerClone.availableActions = [];
+          playerClone.isActive = false;
+          playerClone.isThisPlayer = devMode ? false : playerClone.isThisPlayer;
+          nextPlayerIndex = playerIndex - 1;
+          nextPlayer = _.cloneDeep(players[nextPlayerIndex]);
+          nextPlayer.availableActions = [PLACE_SETTLEMENT];
+          nextPlayer.isActive = true;
+          nextPlayer.isThisPlayer = devMode ? true : nextPlayer.isThisPlayer;
+
+          dispatch({
+            type: UPDATE_PLAYER,
+            payload: {
+              playerIndex: playerIndex,
+              player: playerClone,
+            },
+          });
+          dispatch({
+            type: UPDATE_PLAYER,
+            payload: {
+              playerIndex: nextPlayerIndex,
+              player: nextPlayer,
+            },
+          });
+        }
+      }
+    } else if (gameplayPhase) {
+      // normal gameplay road placement behavior
+    }
+  }
 };
 
 // click node action handler
@@ -466,18 +678,26 @@ export const placeRoad = (edge, player) => async (dispatch, getState) => {
 export const handleNodeClick = (node) => (dispatch, getState) => {
   const thisPlayer = _.find(getState().players.players, (p) => p.isThisPlayer);
   const { isActive } = thisPlayer;
-  const { availableActions } = thisPlayer;
+  const { availableActions, currentAction } = thisPlayer;
   const { settlement, city } = node;
+
+  // const gameState = getState().gameState;
+  const { setupPhase, gameplayPhase } = getState().gameState;
+  const currentPhase = !!setupPhase
+    ? setupPhase
+    : !!gameplayPhase
+    ? gameplayPhase
+    : null;
 
   // It's this player's turn
   if (isActive) {
     // PLACE_SETTLEMENT
-    if (availableActions.includes(PLACE_SETTLEMENT)) {
-      placeSettlement(node, thisPlayer);
+    if (currentAction === PLACE_SETTLEMENT) {
+      placeSettlement(node, thisPlayer)(dispatch, getState);
     }
     // PLACE_CITY
-    if (availableActions.includes(PLACE_CITY)) {
-      placeCity(node, thisPlayer);
+    else if (currentAction === PLACE_CITY) {
+      placeCity(node, thisPlayer)(dispatch, getState);
     } else {
       console.log("Nothing to do!");
       console.log(node);
@@ -491,14 +711,22 @@ export const handleNodeClick = (node) => (dispatch, getState) => {
 export const handleEdgeClick = (edge) => (dispatch, getState) => {
   const thisPlayer = _.find(getState().players.players, (p) => p.isThisPlayer);
   const { isActive } = thisPlayer;
-  const { availableActions } = thisPlayer;
+  const { availableActions, currentAction } = thisPlayer;
   const { road } = edge;
+
+  const gameState = getState().gameState;
+  const { setupPhase, gameplayPhase } = getState().gameState;
+  const currentPhase = !!setupPhase
+    ? setupPhase
+    : !!gameplayPhase
+    ? gameplayPhase
+    : null;
 
   // It's this player's turn
   if (isActive) {
     // PLACE_ROAD
-    if (availableActions.includes(PLACE_ROAD)) {
-      placeRoad(edge, thisPlayer);
+    if (currentAction === PLACE_ROAD) {
+      placeRoad(edge, thisPlayer)(dispatch, getState);
     } else {
       console.log("Nothing to do!");
       console.log(edge);

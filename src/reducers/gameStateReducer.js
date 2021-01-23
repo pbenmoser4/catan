@@ -3,7 +3,16 @@ import {
   SET_ROLL,
   SET_ROLLING,
   START_GAME,
+  START_GAMEPLAY_PHASE,
+  START_SETUP_PHASE_1,
+  START_SETUP_PHASE_2,
 } from "../actions/types";
+
+import {
+  SETUP_PHASE_1,
+  SETUP_PHASE_2,
+  GAMEPLAY_PHASE,
+} from "../util/constants";
 
 const BASE_STATE = {
   dice: {
@@ -16,10 +25,6 @@ const BASE_STATE = {
   setupPhase: false,
   gameplayPhase: false,
   devMode: true,
-  turn: {
-    action: null,
-    player: null,
-  },
 };
 
 const gameStateReducer = (state = BASE_STATE, action) => {
@@ -36,7 +41,13 @@ const gameStateReducer = (state = BASE_STATE, action) => {
         dice: { rolling: true, numbers: currentNumbers, roll: currentRoll },
       };
     case START_GAME:
-      return { ...state, setupPhase: 1 };
+      return { ...state, setupPhase: SETUP_PHASE_1 };
+    case START_GAMEPLAY_PHASE:
+      return { ...state, setupPhase: false, gameplayPhase: true };
+    case START_SETUP_PHASE_1:
+      return { ...state, setupPhase: SETUP_PHASE_1 };
+    case START_SETUP_PHASE_2:
+      return { ...state, setupPhase: SETUP_PHASE_2 };
     default:
       return state;
   }
