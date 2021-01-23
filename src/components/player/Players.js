@@ -4,16 +4,12 @@ import { Box } from "grommet";
 
 import PlayerDisplay from "./PlayerDisplay";
 
-const Players = ({ players, activePlayerId, ...props }) => {
+const Players = ({ players, activePlayerId, thisPlayerId, ...props }) => {
   return (
-    <Box direction="column" gap="medium">
+    <Box direction="column" gap="small">
       {players &&
         players.map((player, i) => {
-          const { id } = player;
-          let isActivePlayer = id === activePlayerId ? true : false;
-          return (
-            <PlayerDisplay player={player} key={i} active={isActivePlayer} />
-          );
+          return <PlayerDisplay player={player} key={player.id} />;
         })}
     </Box>
   );

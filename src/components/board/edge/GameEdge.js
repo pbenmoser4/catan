@@ -7,6 +7,23 @@ import {
 } from "../../../util/helpers";
 import { TILE_CLICK } from "../../../util/constants";
 
+import Road from "../../pieces/Road";
+
+const renderRoad = (edge, startCoords, endCoords) => {
+  const { road } = edge;
+  if (road) {
+    return (
+      <Road
+        startCoords={startCoords}
+        endCoords={endCoords}
+        color={road.color}
+      />
+    );
+  } else {
+    return null;
+  }
+};
+
 const GameEdge = (props) => {
   const { edge, nodes, startCoords, endCoords, strokeWidth, onClick } = props;
   const [hover, setHover] = useState(false);
@@ -38,6 +55,7 @@ const GameEdge = (props) => {
         stroke="black"
         strokeWidth={strokeWidth}
       />
+      {renderRoad(edge, startCoords, endCoords)}
     </g>
   );
 };
@@ -54,7 +72,6 @@ const mapStateToProps = (state, ownProps) => {
     startCoords: startCoords,
     endCoords: endCoords,
     strokeWidth: state.dimensions.tilePad,
-    onClick: state.actions[TILE_CLICK],
   };
 };
 

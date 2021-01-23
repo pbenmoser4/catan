@@ -14,14 +14,28 @@ import {
 
 import { NODE_CLICK } from "../../../util/constants";
 
-//// TODO: implement rendering of settlements and cities
-// const renderSettlement = (node) => {
-//   return null;
-// };
-//
-// const renderCity = (node) => {
-//   return null;
-// };
+import Settlement from "../../pieces/Settlement";
+import City from "../../pieces/City";
+
+const renderSettlement = (node, containerWidth) => {
+  const { settlement } = node;
+  if (settlement) {
+    return (
+      <Settlement containerWidth={containerWidth} color={settlement.color} />
+    );
+  } else {
+    return null;
+  }
+};
+
+const renderCity = (node, containerWidth) => {
+  const { city } = node;
+  if (city) {
+    return <City containerWidth={containerWidth} color={city.color} />;
+  } else {
+    return null;
+  }
+};
 
 const GameNode = (props) => {
   const {
@@ -33,12 +47,7 @@ const GameNode = (props) => {
     getResourceTilesForNode,
     getPortsForNode,
   } = props;
-  const tiles = getTilesForNode(node);
-  const resources = getResourceTilesForNode(node);
-  const ports = getPortsForNode(node);
-  // console.log(tiles);
   const [hover, setHover] = useState(false);
-  // console.log(node, center, radius);
   return (
     <svg
       width={2 * radius}
@@ -47,15 +56,7 @@ const GameNode = (props) => {
       y={center.y - radius}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      onClick={() =>
-        onClick({
-          node: node,
-          edges: getEdgeIndicesForNodeIndex(node),
-          tiles: tiles,
-          resources: resources,
-          ports: ports,
-        })
-      }
+      onClick={() => onClick(node)}
     >
       <circle
         cx={`${radius}`}
@@ -64,6 +65,8 @@ const GameNode = (props) => {
         fill="black"
         fillOpacity={hover ? 1.0 : 0.0}
       />
+      {renderSettlement(node, 2 * radius)}
+      {renderCity(node, 2 * radius)}
     </svg>
   );
 };
@@ -72,7 +75,6 @@ const mapStateToProps = (state, ownProps) => {
   return {
     radius: state.dimensions.componentWidth / 10,
     center: getCenterForIndex(ownProps.node, state.dimensions.coords.NODE),
-    onClick: state.actions[NODE_CLICK],
   };
 };
 

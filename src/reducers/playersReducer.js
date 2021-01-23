@@ -1,16 +1,58 @@
 import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
-import { Diamond, IceCream, Launch, Trigger } from "grommet-icons";
 
-import { ADD_PLAYER } from "../actions/types";
-import { availableIcons, playerColors } from "../util/constants";
+import {
+  ADD_PLAYER,
+  END_TURN,
+  START_GAME,
+  START_GAMEPLAY_PHASE,
+  START_PLACE_CITY_ACTION,
+  START_PLACE_ROAD_ACTION,
+  START_PLACE_SETTLEMENT_ACTION,
+  PLACE_SETTLEMENT,
+  PLACE_CITY,
+  PLACE_ROAD,
+  SET_ROLL_ORDER,
+  UPDATE_PLAYER,
+  UPDATE_PLAYERS,
+} from "../actions/types";
 
-const basePlayer = (id, displayName, icon, color) => {
+import {
+  ROLL,
+  BUILD,
+  BUY,
+  TRADE,
+  USE,
+  STEAL,
+  START,
+  PLACE,
+  availableIcons,
+  playerColors,
+  SETUP_PHASE_1,
+  SETUP_PHASE_2,
+  GAMEPLAY_PHASE,
+} from "../util/constants";
+
+const basePlayer = (
+  id,
+  displayName,
+  icon,
+  color,
+  isActive = false,
+  isThisPlayer = false,
+  availableActions = []
+) => {
   return {
     id: id,
+    isActive: isActive, // maybe
+    isThisPlayer: isThisPlayer,
+    availableActions: availableActions,
+    currentAction: null,
     icon: icon,
     color: color,
     displayName: displayName,
+    longestRoad: false,
+    largestArmy: false,
     hand: {
       resources: {
         BRICK: 0,
@@ -26,29 +68,57 @@ const basePlayer = (id, displayName, icon, color) => {
         MONOPOLY: 0,
         VICTORY_POINT: 0,
       },
+      playedDevelopmentCards: {
+        KNIGHT: 0,
+        ROAD_BUILDING: 0,
+        YEAR_OF_PLENTY: 0,
+        MONOPOLY: 0,
+        VICTORY_POINT: 0,
+      },
     },
+    settlements: [],
+    cities: [],
+    roads: [],
     score: 0,
   };
 };
 
 const BASE_STATE_TESTING = {
   players: [
-    basePlayer(uuidv4(), "Ben", availableIcons[0], playerColors[0]),
+    basePlayer(0, "Ben", availableIcons[0], playerColors[0], true, true, [
+      START_GAME,
+    ]),
     basePlayer(uuidv4(), "Maddie", availableIcons[1], playerColors[1]),
     basePlayer(uuidv4(), "Benedict", availableIcons[2], playerColors[2]),
-    basePlayer(uuidv4(), "LONGNAME", availableIcons[3], playerColors[3]),
+    basePlayer(uuidv4(), "Alison", availableIcons[3], playerColors[3]),
   ],
   rollOrder: [],
   setupOrder: [],
+  devMode: true,
+  gameOwnerId: 0,
+  turn: 0,
 };
 
 const BASE_STATE = {
   players: [],
   rollOrder: [],
   setupOrder: [],
+  devMode: false,
+  gameOwnerId: 0,
+  turn: 0,
 };
 
 const playersReducer = (state = BASE_STATE_TESTING, action) => {
+  let node = null;
+  let edge = null;
+  let gamePhase = null;
+  let player = null;
+  let playerIndex = null;
+  let playersCopy = null;
+  let nextPlayer = null;
+  let nextPlayerIndex = null;
+  let newTurn = state.turn;
+
   switch (action.type) {
     case ADD_PLAYER:
       const { displayName, id } = action.payload;
@@ -64,6 +134,92 @@ const playersReducer = (state = BASE_STATE_TESTING, action) => {
       );
 
       return { ...state, players: currentPlayers };
+    case START_GAME:
+      let playersNewOrder = _.shuffle(state.players);
+      playersNewOrder = playersNewOrder.map((p, i) => {
+        if (i === 0) {
+          // new currently active player
+          p.isActive = true;
+          p.availableActions = [PLACE_SETTLEMENT];
+          if (state.devMode) {
+            p.isThisPlayer = true;
+          }
+        } else {
+          // This isn't the currently active player
+          p.isActive = false;
+          p.availableActions = [];
+          if (state.devMode) {
+            p.isThisPlayer = false;
+          }
+        }
+        return p;
+      });
+      const setupOrder = playersNewOrder.map((p) => p.id);
+      return {
+        ...state,
+        players: playersNewOrder,
+        setupOrder: setupOrder,
+      };
+    case SET_ROLL_ORDER:
+      return { ...state, rollOrder: action.payload };
+    case START_PLACE_SETTLEMENT_ACTION:
+      player = action.payload;
+      player["currentAction"] = PLACE_SETTLEMENT;
+      playersCopy = _.cloneDeep(state.players);
+      playerIndex = _.findIndex(playersCopy, { id: player.id });
+      playersCopy[playerIndex] = player;
+      return { ...state, players: playersCopy };
+    case PLACE_SETTLEMENT:
+      node = action.payload.node;
+      player = action.payload.player;
+      player.settlements.push(node);
+      playersCopy = _.cloneDeep(state.players);
+      playerIndex = _.findIndex(playersCopy, { id: player.id });
+      playersCopy[playerIndex] = player;
+      return { ...state, players: playersCopy };
+    case START_PLACE_CITY_ACTION:
+      player = action.payload;
+      player["currentAction"] = PLACE_CITY;
+      playersCopy = _.cloneDeep(state.players);
+      playerIndex = _.findIndex(playersCopy, { id: player.id });
+      playersCopy[playerIndex] = player;
+      return { ...state, players: playersCopy };
+    case PLACE_CITY:
+      node = action.payload.node;
+      player = action.payload.player;
+      player.cities.push(node);
+      _.remove(
+        player.settlements,
+        (n) => n.row === node.row && n.col === node.col
+      );
+      playersCopy = _.cloneDeep(state.players);
+      playerIndex = _.findIndex(playersCopy, { id: player.id });
+      playersCopy[playerIndex] = player;
+      return { ...state, players: playersCopy };
+    case START_PLACE_ROAD_ACTION:
+      player = action.payload;
+      player["currentAction"] = PLACE_ROAD;
+      playersCopy = _.cloneDeep(state.players);
+      playerIndex = _.findIndex(playersCopy, { id: player.id });
+      playersCopy[playerIndex] = player;
+      return { ...state, players: playersCopy };
+    case PLACE_ROAD:
+      let playersGameplayOrder = null;
+      edge = action.payload.edge;
+      player = action.payload.player;
+      player.roads.push(edge);
+      playersCopy = _.cloneDeep(state.players);
+      playerIndex = _.findIndex(playersCopy, { id: player.id });
+      playersCopy[playerIndex] = player;
+      return { ...state, players: playersCopy };
+    case UPDATE_PLAYER:
+      playerIndex = action.payload.playerIndex;
+      player = action.payload.player;
+      playersCopy = _.cloneDeep(state.players);
+      playersCopy[playerIndex] = player;
+      return { ...state, players: playersCopy };
+    case UPDATE_PLAYERS:
+      return { ...state, players: action.payload };
     default:
       return state;
   }

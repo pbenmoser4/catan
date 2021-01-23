@@ -1,19 +1,16 @@
 import {
-  ADD_PLAYER,
   SET_ROLL,
   SET_ROLLING,
   START_GAME,
+  START_GAMEPLAY_PHASE,
+  START_SETUP_PHASE_1,
+  START_SETUP_PHASE_2,
 } from "../actions/types";
 
 import {
-  ROLL,
-  BUILD,
-  BUY,
-  TRADE,
-  USE,
-  STEAL,
-  START,
-  PLACE,
+  SETUP_PHASE_1,
+  SETUP_PHASE_2,
+  GAMEPLAY_PHASE,
 } from "../util/constants";
 
 const BASE_STATE = {
@@ -22,16 +19,11 @@ const BASE_STATE = {
     numbers: [1, 1],
     roll: 2,
   },
-  activePlayerId: 0,
-  availableActions: [START],
+  gameOwnerId: 0,
   turn: 0,
   setupPhase: false,
   gameplayPhase: false,
   devMode: true,
-  turn: {
-    action: null,
-    player: null,
-  },
 };
 
 const gameStateReducer = (state = BASE_STATE, action) => {
@@ -47,20 +39,14 @@ const gameStateReducer = (state = BASE_STATE, action) => {
         ...state,
         dice: { rolling: true, numbers: currentNumbers, roll: currentRoll },
       };
-    case ADD_PLAYER:
-      const { id } = action.payload;
-
-      let newActivePlayerId = state.activePlayerId;
-
-      if (state.devMode) {
-        // set the active player to the just created player
-        newActivePlayerId = id;
-      }
-
-      return {
-        ...state,
-        activePlayerId: newActivePlayerId,
-      };
+    case START_GAME:
+      return { ...state, setupPhase: SETUP_PHASE_1 };
+    case START_GAMEPLAY_PHASE:
+      return { ...state, setupPhase: false, gameplayPhase: GAMEPLAY_PHASE };
+    case START_SETUP_PHASE_1:
+      return { ...state, setupPhase: SETUP_PHASE_1 };
+    case START_SETUP_PHASE_2:
+      return { ...state, setupPhase: SETUP_PHASE_2 };
     default:
       return state;
   }

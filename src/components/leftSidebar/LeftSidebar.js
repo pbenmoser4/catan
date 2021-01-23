@@ -14,7 +14,6 @@ const LeftSidebar = ({ height, width, ...props }) => {
     >
       <Box
         height={{ min: `${gameStateHeight}px`, max: `${gameStateHeight}px` }}
-        background="dark-5"
         pad="small"
       >
         <GameStatePane width={width} pad={24} />
