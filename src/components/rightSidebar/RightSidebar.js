@@ -3,6 +3,7 @@ import React from "react";
 import { Box } from "grommet";
 
 import ActionsPane from "./ActionsPane";
+import HandPane from "./HandPane";
 
 const RightSidebar = ({ height, ...props }) => {
   const actionsHeight = (height * 2) / 5;
@@ -24,7 +25,7 @@ const RightSidebar = ({ height, ...props }) => {
         background="dark-3"
         pad="small"
       >
-        Hand
+        <HandPane />
       </Box>
     </Box>
   );

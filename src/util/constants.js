@@ -21,6 +21,15 @@ export const WATER = "WATER";
 export const WHEAT = "WHEAT";
 export const WOOD = "WOOD";
 export const ANY = "ANY";
+export const resourceLabels = {};
+resourceLabels[BRICK] = "Brick";
+resourceLabels[DESERT] = "Desert";
+resourceLabels[ORE] = "Ore";
+resourceLabels[SHEEP] = "Sheep";
+resourceLabels[WATER] = "Ocean";
+resourceLabels[WHEAT] = "Wheat";
+resourceLabels[WOOD] = "Wood";
+resourceLabels[ANY] = "Any Resource";
 
 export const DEVELOPMENT_CARD = "DEVELOPMENT_CARD";
 export const KNIGHT = "KNIGHT";
@@ -28,6 +37,12 @@ export const MONOPOLY = "MONOPOLY";
 export const ROAD_BUILDING = "ROAD_BUILDING";
 export const VICTORY_POINT = "VICTORY_POINT";
 export const YEAR_OF_PLENTY = "YEAR_OF_PLENTY";
+export const developmentCardLabels = {};
+developmentCardLabels[KNIGHT] = "Knight";
+developmentCardLabels[MONOPOLY] = "Monopoly";
+developmentCardLabels[ROAD_BUILDING] = "Road Building";
+developmentCardLabels[VICTORY_POINT] = "Victory Point";
+developmentCardLabels[YEAR_OF_PLENTY] = "Year of Plenty";
 
 //// TODO: Fill in the "Name" and "Description" for each type of d card
 export const developmentCardText = {};

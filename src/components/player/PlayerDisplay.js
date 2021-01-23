@@ -1,13 +1,13 @@
 import React from "react";
 
 import { Avatar, Box, Text } from "grommet";
-import { Fireball } from "grommet-icons";
+import { Fireball, Sun } from "grommet-icons";
 
 import { getCardCountForHand } from "../../util/helpers";
 
+import DevelopmentCard from "../cards/DevelopmentCard";
 import HiddenDevelopmentCard from "../cards/HiddenDevelopmentCard";
 import HiddenResourceCard from "../cards/HiddenResourceCard";
-import DevelopmentCard from "../cards/DevelopmentCard";
 
 const PlayerDisplay = ({ player, ...props }) => {
   const { hand, isActive, isThisPlayer } = player;
@@ -24,14 +24,17 @@ const PlayerDisplay = ({ player, ...props }) => {
       align="center"
       justify="center"
       pad="xsmall"
-      background={isActive ? "light-4" : null}
-      border={isActive ? { color: "dark-1", size: "small" } : null}
       round="small"
     >
+      {isActive && <Sun size="medium" />}
       <Avatar
         size="medium"
         background={player.color}
-        border={{ color: "dark-2", size: "small" }}
+        border={
+          isActive
+            ? { color: "dark-2", size: "medium" }
+            : { color: "dark-2", size: "small" }
+        }
       >
         {player.icon}
       </Avatar>
@@ -50,11 +53,13 @@ const PlayerDisplay = ({ player, ...props }) => {
           <HiddenResourceCard
             width="33px"
             height="50px"
+            text="R"
             count={numResourceCards}
           />
           <HiddenDevelopmentCard
             width="33px"
             height="50px"
+            text="D"
             count={numDevelopmentCards}
           />
           {numPlayedDevelopmentCards > 0 && (
