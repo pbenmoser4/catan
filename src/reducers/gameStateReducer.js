@@ -1,5 +1,4 @@
 import {
-  ADD_PLAYER,
   SET_ROLL,
   SET_ROLLING,
   START_GAME,
