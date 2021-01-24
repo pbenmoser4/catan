@@ -1,6 +1,11 @@
 import { Diamond, IceCream, Launch, Trigger } from "grommet-icons";
 
-import { PLACE_ROAD, PLACE_SETTLEMENT, START_GAME } from "../actions/types";
+import {
+  PLACE_CITY,
+  PLACE_ROAD,
+  PLACE_SETTLEMENT,
+  START_GAME,
+} from "../actions/types";
 
 export const GAMEPLAY_PHASE = "GAMEPLAY_PHASE";
 export const SETUP_PHASE_1 = "SETUP_PHASE_1";
@@ -21,6 +26,15 @@ export const WATER = "WATER";
 export const WHEAT = "WHEAT";
 export const WOOD = "WOOD";
 export const ANY = "ANY";
+export const resourceLabels = {};
+resourceLabels[BRICK] = "Brick";
+resourceLabels[DESERT] = "Desert";
+resourceLabels[ORE] = "Ore";
+resourceLabels[SHEEP] = "Sheep";
+resourceLabels[WATER] = "Ocean";
+resourceLabels[WHEAT] = "Wheat";
+resourceLabels[WOOD] = "Wood";
+resourceLabels[ANY] = "Any Resource";
 
 export const DEVELOPMENT_CARD = "DEVELOPMENT_CARD";
 export const KNIGHT = "KNIGHT";
@@ -28,6 +42,12 @@ export const MONOPOLY = "MONOPOLY";
 export const ROAD_BUILDING = "ROAD_BUILDING";
 export const VICTORY_POINT = "VICTORY_POINT";
 export const YEAR_OF_PLENTY = "YEAR_OF_PLENTY";
+export const developmentCardLabels = {};
+developmentCardLabels[KNIGHT] = "Knight";
+developmentCardLabels[MONOPOLY] = "Monopoly";
+developmentCardLabels[ROAD_BUILDING] = "Road Building";
+developmentCardLabels[VICTORY_POINT] = "Victory Point";
+developmentCardLabels[YEAR_OF_PLENTY] = "Year of Plenty";
 
 //// TODO: Fill in the "Name" and "Description" for each type of d card
 export const developmentCardText = {};
@@ -112,6 +132,10 @@ actionLabels[START_GAME] = {
 actionLabels[STEAL] = { enabled: "Steal", disabled: "Cancel Steal" };
 actionLabels[TRADE] = { enabled: "Trade", disabled: "Cancel Trade" };
 actionLabels[USE] = { enabled: "Use Development Card", disabled: "Cancel Use" };
+actionLabels[PLACE_CITY] = {
+  enabled: "Place City",
+  disabled: "Cancel Place",
+};
 actionLabels[PLACE_ROAD] = {
   enabled: "Place Road",
   disabled: "Cancel Place",

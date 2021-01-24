@@ -145,11 +145,13 @@ const playersReducer = (state = BASE_STATE_TESTING, action) => {
     case SET_ROLL_ORDER:
       return { ...state, rollOrder: action.payload };
     case START_PLACE_SETTLEMENT_ACTION:
+      console.log("start place settlement");
       player = action.payload;
       player["currentAction"] = PLACE_SETTLEMENT;
       playersCopy = _.cloneDeep(state.players);
       playerIndex = _.findIndex(playersCopy, { id: player.id });
       playersCopy[playerIndex] = player;
+      console.log(playersCopy);
       return { ...state, players: playersCopy };
     case PLACE_SETTLEMENT:
       node = action.payload.node;

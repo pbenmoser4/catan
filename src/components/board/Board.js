@@ -19,6 +19,8 @@ const Board = ({
   ...props
 }) => {
   const { generateBoardState, setBoardDimensions, numCols } = props;
+  let { board, dimensions } = props;
+
   useEffect(() => {
     if (Object.keys(board).length === 0) {
       generateBoardState(numCols);
@@ -33,8 +35,6 @@ const Board = ({
     pad,
     board,
   ]);
-
-  let { board, dimensions } = props;
 
   let boardTiles = [];
   let boardNodes = [];
