@@ -92,7 +92,6 @@ const Hand = ({ hand, ...props }) => {
     hand,
     componentWidth
   );
-  console.log(developmentCardItems, playedDevelopmentCardItems);
 
   return (
     <Box direction="column" gap="small" ref={ref}>

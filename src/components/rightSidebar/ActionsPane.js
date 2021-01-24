@@ -7,10 +7,16 @@ import { Box, Button, Text } from "grommet";
 import {
   startRoll,
   startGame,
+  startPlaceCityAction,
   startPlaceRoadAction,
   startPlaceSettlementAction,
 } from "../../actions";
-import { START_GAME, PLACE_SETTLEMENT, PLACE_ROAD } from "../../actions/types";
+import {
+  START_GAME,
+  PLACE_SETTLEMENT,
+  PLACE_ROAD,
+  PLACE_CITY,
+} from "../../actions/types";
 import {
   BUILD,
   BUY,
@@ -34,7 +40,9 @@ const ActionsPane = (props) => {
     startRoll,
     startGame,
     availableActions,
+    currentAction,
     thisPlayer,
+    startPlaceCityAction,
     startPlaceRoadAction,
     startPlaceSettlementAction,
   } = props;
@@ -48,7 +56,7 @@ const ActionsPane = (props) => {
   actionButtons[START_GAME] = actionButton(
     START_GAME,
     () => startGame(),
-    thisPlayer.currentAction === START_GAME
+    currentAction === START_GAME
   );
   actionButtons[STEAL] = actionButton(STEAL, () => console.log("steal"));
   actionButtons[TRADE] = actionButton(TRADE, () => console.log("Trade"));
@@ -56,24 +64,35 @@ const ActionsPane = (props) => {
   actionButtons[PLACE_ROAD] = actionButton(
     PLACE_ROAD,
     () => {
-      if (thisPlayer.currentAction === PLACE_ROAD) {
+      if (currentAction === PLACE_ROAD) {
         console.log("cancel action");
       } else {
         startPlaceRoadAction(thisPlayer);
       }
     },
-    thisPlayer.currentAction === PLACE_ROAD
+    currentAction === PLACE_ROAD
   );
   actionButtons[PLACE_SETTLEMENT] = actionButton(
     PLACE_SETTLEMENT,
     () => {
-      if (thisPlayer.currentAction === PLACE_SETTLEMENT) {
+      if (currentAction === PLACE_SETTLEMENT) {
         console.log("Cancel action");
       } else {
         startPlaceSettlementAction(thisPlayer);
       }
     },
-    thisPlayer.currentAction === PLACE_SETTLEMENT
+    currentAction === PLACE_SETTLEMENT
+  );
+  actionButtons[PLACE_CITY] = actionButton(
+    PLACE_CITY,
+    () => {
+      if (currentAction === PLACE_CITY) {
+        console.log("Cancel action");
+      } else {
+        startPlaceCityAction(thisPlayer);
+      }
+    },
+    currentAction === PLACE_CITY
   );
 
   return (
@@ -91,12 +110,14 @@ const mapStateToProps = (state) => {
   return {
     thisPlayer: thisPlayer,
     availableActions: availableActions,
+    currentAction: currentAction,
   };
 };
 
 export default connect(mapStateToProps, {
   startRoll,
   startGame,
+  startPlaceCityAction,
   startPlaceRoadAction,
   startPlaceSettlementAction,
 })(ActionsPane);

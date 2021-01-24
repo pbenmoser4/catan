@@ -1,6 +1,11 @@
 import { Diamond, IceCream, Launch, Trigger } from "grommet-icons";
 
-import { PLACE_ROAD, PLACE_SETTLEMENT, START_GAME } from "../actions/types";
+import {
+  PLACE_CITY,
+  PLACE_ROAD,
+  PLACE_SETTLEMENT,
+  START_GAME,
+} from "../actions/types";
 
 export const GAMEPLAY_PHASE = "GAMEPLAY_PHASE";
 export const SETUP_PHASE_1 = "SETUP_PHASE_1";
@@ -127,6 +132,10 @@ actionLabels[START_GAME] = {
 actionLabels[STEAL] = { enabled: "Steal", disabled: "Cancel Steal" };
 actionLabels[TRADE] = { enabled: "Trade", disabled: "Cancel Trade" };
 actionLabels[USE] = { enabled: "Use Development Card", disabled: "Cancel Use" };
+actionLabels[PLACE_CITY] = {
+  enabled: "Place City",
+  disabled: "Cancel Place",
+};
 actionLabels[PLACE_ROAD] = {
   enabled: "Place Road",
   disabled: "Cancel Place",
