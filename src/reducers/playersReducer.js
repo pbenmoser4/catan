@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import {
   ADD_PLAYER,
+  ADD_RESOURCES_TO_PLAYER,
   END_TURN,
   START_GAME,
   START_GAMEPLAY_PHASE,
@@ -100,6 +101,7 @@ const playersReducer = (state = BASE_STATE_TESTING, action) => {
   let player = null;
   let playerIndex = null;
   let playersCopy = null;
+  let resources = null;
 
   switch (action.type) {
     case ADD_PLAYER:
@@ -116,6 +118,20 @@ const playersReducer = (state = BASE_STATE_TESTING, action) => {
       );
 
       return { ...state, players: currentPlayers };
+    case ADD_RESOURCES_TO_PLAYER:
+      console.log("adding resources to player, ", action.payload.playerId);
+      playerIndex = action.payload.playerId;
+      resources = action.payload.resources;
+      playersCopy = _.cloneDeep(state.players);
+      player = _.find(playersCopy, (p) => p.id === playerIndex);
+      _.forEach(resources, (resource, idx) => {
+        player.hand.resources[resource.resource] =
+          player.hand.resources[resource.resource] + resource.count;
+      });
+
+      console.log(playersCopy);
+      return { ...state, players: playersCopy };
+
     case START_GAME:
       let playersNewOrder = _.shuffle(state.players);
       playersNewOrder = playersNewOrder.map((p, i) => {

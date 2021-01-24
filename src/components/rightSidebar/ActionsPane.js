@@ -5,12 +5,12 @@ import { connect } from "react-redux";
 import { Box, Button, Text } from "grommet";
 
 import {
-  startRoll,
   startGame,
   startPlaceCityAction,
   startPlaceRoadAction,
   startPlaceSettlementAction,
 } from "../../actions";
+import { startRoll } from "../../actions/roll";
 import {
   START_GAME,
   PLACE_SETTLEMENT,

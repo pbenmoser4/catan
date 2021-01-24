@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import { Box, Text } from "grommet";
 
-import { endRoll } from "../../actions";
+import { endRoll } from "../../actions/roll";
 
 import Dice from "../dice/Dice";
 

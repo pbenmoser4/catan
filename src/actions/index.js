@@ -12,8 +12,8 @@ import {
   SET_BOARD_DIMENSIONS,
   SET_ROLL_ORDER,
   START_PLACE_ROAD_ACTION,
-  SET_ROLL,
-  SET_ROLLING,
+  // SET_ROLL,
+  // SET_ROLLING,
   START_GAME,
   START_GAMEPLAY_PHASE,
   START_PLACE_CITY_ACTION,
@@ -268,22 +268,6 @@ export const getPortsForNode = (node) => (dispatch, getState) => {
   });
 
   return ret[0] ? ret : undefined;
-};
-
-// Dice stuff babyyyy
-
-export const startRoll = () => (dispatch, getState) => {
-  dispatch({
-    type: SET_ROLLING,
-    payload: null,
-  });
-};
-
-export const endRoll = () => (dispatch, getState) => {
-  dispatch({
-    type: SET_ROLL,
-    payload: [Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)],
-  });
 };
 
 // player creation actions
