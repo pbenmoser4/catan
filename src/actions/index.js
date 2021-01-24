@@ -12,8 +12,6 @@ import {
   SET_BOARD_DIMENSIONS,
   SET_ROLL_ORDER,
   START_PLACE_ROAD_ACTION,
-  // SET_ROLL,
-  // SET_ROLLING,
   START_GAME,
   START_GAMEPLAY_PHASE,
   START_PLACE_CITY_ACTION,
@@ -28,6 +26,7 @@ import {
   tileCounts,
   DESERT,
   RESOURCE,
+  ROBBER,
   WATER,
   PORT_RESOURCE,
   PORT_DIRECTION,
@@ -159,14 +158,20 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
 
   const tCopy = _.cloneDeep(tiles);
   tiles = tCopy.map((t) => {
+    let newTile = t;
     let tPip = _.find(
       pipPlacementArray,
       (p) => p.row === t.row && p.col === t.col
     );
     if (tPip) {
-      return { ...t, number: tPip.number };
+      newTile["number"] = tPip.number;
+      newTile[ROBBER] = false;
     }
-    return t;
+    if (t[RESOURCE] === DESERT) {
+      console.log("desert found", t);
+      newTile[ROBBER] = true;
+    }
+    return newTile;
   });
 
   dispatch({

@@ -10,6 +10,7 @@ import {
   TILE_CLICK,
   PORT_DIRECTION,
   PORT_RESOURCE,
+  ROBBER,
 } from "../../../util/constants";
 
 import { Group } from "@visx/group";
@@ -17,6 +18,7 @@ import { Group } from "@visx/group";
 import Hexagon from "./Hexagon";
 import Pip from "./Pip";
 import Port from "./Port";
+import Robber from "../../pieces/Robber";
 
 const GameTile = (props) => {
   const [hover, setHover] = useState(false);
@@ -50,6 +52,9 @@ const GameTile = (props) => {
           pad={pad}
           hover={hover ? true : false}
         />
+      )}
+      {tile[ROBBER] && (
+        <Robber center={center} height={hover ? width / 2.5 : width / 3} />
       )}
     </Group>
   );

@@ -15,6 +15,7 @@ export const TILE = "TILE";
 export const NODE = "NODE";
 export const EDGE = "EDGE";
 export const RESOURCE = "RESOURCE";
+export const ROBBER = "ROBBER";
 export const PORT_RESOURCE = "PORT_RESOURCE";
 export const PORT_DIRECTION = "PORT_DIRECTION";
 
