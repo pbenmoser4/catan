@@ -2,8 +2,9 @@ import React from "react";
 import { connect } from "react-redux";
 
 import { addPlayer } from "../../actions";
+import { setInitialStateForTesting } from "../../actions/setup";
 
-import { Button, Header, Text } from "grommet";
+import { Box, Button, Header, Text } from "grommet";
 
 const addPlayerButtonClicked = (name, addPlayerFunction) => {
   addPlayerFunction(name)
@@ -14,7 +15,7 @@ const addPlayerButtonClicked = (name, addPlayerFunction) => {
 };
 
 const AppHeader = (props) => {
-  const { height, addPlayer } = props;
+  const { height, addPlayer, setInitialStateForTesting } = props;
   return (
     <Header
       background="brand"
@@ -23,12 +24,20 @@ const AppHeader = (props) => {
       elevation="large"
     >
       <Text>CATAN!</Text>
-      <Button
-        label="add player"
-        onClick={() => addPlayerButtonClicked("John", addPlayer)}
-      />
+      <Box direction="row">
+        <Button
+          label="add player"
+          onClick={() => addPlayerButtonClicked("John", addPlayer)}
+        />
+        <Button
+          label="test setup"
+          onClick={() => setInitialStateForTesting()}
+        />
+      </Box>
     </Header>
   );
 };
 
-export default connect(null, { addPlayer })(AppHeader);
+export default connect(null, { addPlayer, setInitialStateForTesting })(
+  AppHeader
+);

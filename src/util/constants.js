@@ -1,6 +1,7 @@
 import { Diamond, IceCream, Launch, Trigger } from "grommet-icons";
 
 import {
+  GIVE_CARD,
   PLACE_CITY,
   PLACE_ROAD,
   PLACE_SETTLEMENT,
@@ -124,6 +125,7 @@ export const actionLabels = {};
 actionLabels[BUILD] = { enabled: "Build", disabled: "Cancel Build" };
 actionLabels[BUY] = { enabled: "Buy", disabled: "Cancel Buy" };
 actionLabels[END] = { enabled: "End Turn" };
+actionLabels[GIVE_CARD] = { enabled: "Give Card", disabled: "Cancel" };
 actionLabels[PLACE] = { enabled: "Place Item", disabled: "Cancel Place" };
 actionLabels[ROLL] = { enabled: "Roll", disabled: "Rolling" };
 actionLabels[START_GAME] = {
@@ -163,3 +165,5 @@ export const availableIcons = [
 
 export const developmentCardColor = "#B3AB8F";
 export const resourceCardColor = "#825900";
+
+export const SEVEN_ROLL = "SEVEN_ROLL";

@@ -13,6 +13,7 @@ import {
 import { startRoll } from "../../actions/roll";
 import {
   START_GAME,
+  GIVE_CARD,
   PLACE_SETTLEMENT,
   PLACE_ROAD,
   PLACE_CITY,
@@ -51,6 +52,11 @@ const ActionsPane = (props) => {
   actionButtons[BUILD] = actionButton(BUILD, () => console.log("Build"));
   actionButtons[BUY] = actionButton(BUY, () => console.log("Buy"));
   actionButtons[END] = actionButton(END, () => console.log("End Turn"));
+  actionButtons[GIVE_CARD] = actionButton(
+    GIVE_CARD,
+    () => console.log("give card"),
+    currentAction === GIVE_CARD
+  );
   actionButtons[PLACE] = actionButton(PLACE, () => console.log("Place"));
   actionButtons[ROLL] = actionButton(ROLL, () => startRoll());
   actionButtons[START_GAME] = actionButton(

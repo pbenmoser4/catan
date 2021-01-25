@@ -2,7 +2,7 @@ import React from "react";
 
 const Robber = ({ center, height, ...props }) => {
   const { x, y } = center;
-  console.log(x, y);
+
   const base = height / 10;
   return (
     <g>

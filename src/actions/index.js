@@ -19,6 +19,7 @@ import {
   START_SETUP_PHASE_2,
   UPDATE_PLAYER,
   UPDATE_PLAYERS,
+  UPDATE_PLAYERS_NEW_ORDER,
 } from "./types";
 import {
   ports,
@@ -168,7 +169,6 @@ export const generateBoardState = (numCols) => (dispatch, getState) => {
       newTile[ROBBER] = false;
     }
     if (t[RESOURCE] === DESERT) {
-      console.log("desert found", t);
       newTile[ROBBER] = true;
     }
     return newTile;
@@ -613,8 +613,10 @@ export const placeRoad = (edge, player) => async (dispatch, getState) => {
           });
           const rollOrder = newPlayerOrder.map((p) => p.id);
 
+          console.log(newPlayerOrder);
+
           dispatch({
-            type: UPDATE_PLAYERS,
+            type: UPDATE_PLAYERS_NEW_ORDER,
             payload: newPlayerOrder,
           });
 

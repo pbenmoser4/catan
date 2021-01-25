@@ -5,17 +5,20 @@ import {
   ADD_PLAYER,
   ADD_RESOURCES_TO_PLAYER,
   END_TURN,
+  PLACE_SETTLEMENT,
+  PLACE_CITY,
+  PLACE_ROAD,
+  ROLL,
+  SET_THIS_PLAYER,
   START_GAME,
   START_GAMEPLAY_PHASE,
   START_PLACE_CITY_ACTION,
   START_PLACE_ROAD_ACTION,
   START_PLACE_SETTLEMENT_ACTION,
-  PLACE_SETTLEMENT,
-  PLACE_CITY,
-  PLACE_ROAD,
   SET_ROLL_ORDER,
   UPDATE_PLAYER,
   UPDATE_PLAYERS,
+  UPDATE_PLAYERS_NEW_ORDER,
 } from "../actions/types";
 
 import { availableIcons, playerColors } from "../util/constants";
@@ -99,6 +102,8 @@ const playersReducer = (state = BASE_STATE_TESTING, action) => {
   let node = null;
   let edge = null;
   let player = null;
+  let players = null;
+  let playerId = null;
   let playerIndex = null;
   let playersCopy = null;
   let resources = null;
@@ -119,7 +124,6 @@ const playersReducer = (state = BASE_STATE_TESTING, action) => {
 
       return { ...state, players: currentPlayers };
     case ADD_RESOURCES_TO_PLAYER:
-      console.log("adding resources to player, ", action.payload.playerId);
       playerIndex = action.payload.playerId;
       resources = action.payload.resources;
       playersCopy = _.cloneDeep(state.players);
@@ -128,10 +132,19 @@ const playersReducer = (state = BASE_STATE_TESTING, action) => {
         player.hand.resources[resource.resource] =
           player.hand.resources[resource.resource] + resource.count;
       });
-
-      console.log(playersCopy);
       return { ...state, players: playersCopy };
-
+    case SET_THIS_PLAYER:
+      playerId = action.payload;
+      playersCopy = _.cloneDeep(state.players);
+      playersCopy = _.map(playersCopy, (p, idx) => {
+        if (p.id === playerId) {
+          p.isThisPlayer = true;
+        } else {
+          p.isThisPlayer = false;
+        }
+        return p;
+      });
+      return { ...state, players: playersCopy };
     case START_GAME:
       let playersNewOrder = _.shuffle(state.players);
       playersNewOrder = playersNewOrder.map((p, i) => {
@@ -158,16 +171,24 @@ const playersReducer = (state = BASE_STATE_TESTING, action) => {
         players: playersNewOrder,
         setupOrder: setupOrder,
       };
+    case START_GAMEPLAY_PHASE:
+      playersCopy = _.cloneDeep(state.players);
+      playersCopy = _.map(playersCopy, (p, i) => {
+        p.isActive = i === 0 ? true : false;
+        p.isThisPlayer =
+          i === 0 ? (state.devMode ? true : p.isThisPlayer) : p.isThisPlayer;
+        p.availableActions = i === 0 ? [ROLL] : [];
+        return p;
+      });
+      return { ...state, players: playersCopy };
     case SET_ROLL_ORDER:
       return { ...state, rollOrder: action.payload };
     case START_PLACE_SETTLEMENT_ACTION:
-      console.log("start place settlement");
       player = action.payload;
       player["currentAction"] = PLACE_SETTLEMENT;
       playersCopy = _.cloneDeep(state.players);
       playerIndex = _.findIndex(playersCopy, { id: player.id });
       playersCopy[playerIndex] = player;
-      console.log(playersCopy);
       return { ...state, players: playersCopy };
     case PLACE_SETTLEMENT:
       node = action.payload.node;
@@ -218,6 +239,17 @@ const playersReducer = (state = BASE_STATE_TESTING, action) => {
       playersCopy[playerIndex] = player;
       return { ...state, players: playersCopy };
     case UPDATE_PLAYERS:
+      players = action.payload;
+      playersCopy = _.cloneDeep(state.players);
+      playersCopy = _.map(playersCopy, (p) => {
+        let replacementPlayer = _.find(players, (pl) => pl.id === p.id);
+        return replacementPlayer ? replacementPlayer : p;
+      });
+      return {
+        ...state,
+        players: playersCopy,
+      };
+    case UPDATE_PLAYERS_NEW_ORDER:
       return { ...state, players: action.payload };
     default:
       return state;

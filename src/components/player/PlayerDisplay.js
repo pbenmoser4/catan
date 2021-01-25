@@ -1,15 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
+import { connect } from "react-redux";
 
 import { Avatar, Box, Text } from "grommet";
 import { Fireball, Sun } from "grommet-icons";
 
 import { getCardCountForHand } from "../../util/helpers";
+import { setThisPlayer } from "../../actions/player";
 
 import DevelopmentCard from "../cards/DevelopmentCard";
 import HiddenDevelopmentCard from "../cards/HiddenDevelopmentCard";
 import HiddenResourceCard from "../cards/HiddenResourceCard";
 
-const PlayerDisplay = ({ player, ...props }) => {
+const PlayerDisplay = ({ player, devMode, setThisPlayer, ...props }) => {
+  const [hover, setHover] = useState(false);
   const { hand, isActive, isThisPlayer } = player;
   const numDevelopmentCards = getCardCountForHand(hand.developmentCards);
   const numResourceCards = getCardCountForHand(hand.resources);
@@ -25,6 +28,13 @@ const PlayerDisplay = ({ player, ...props }) => {
       justify="center"
       pad="xsmall"
       round="small"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onClick={() => {
+        if (devMode) {
+          setThisPlayer(player.id);
+        }
+      }}
     >
       {isActive && <Sun size="medium" />}
       <Avatar
@@ -75,4 +85,10 @@ const PlayerDisplay = ({ player, ...props }) => {
   );
 };
 
-export default PlayerDisplay;
+const mapStateToProps = (state) => {
+  return {
+    devMode: state.gameState.devMode,
+  };
+};
+
+export default connect(mapStateToProps, { setThisPlayer })(PlayerDisplay);
